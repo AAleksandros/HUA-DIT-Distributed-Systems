@@ -1,0 +1,29 @@
+<blooddonations>
+    <div th:if="${not #lists.isEmpty(blooddonations)}">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Quantity</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="blooddonations : ${blooddonations }">
+                <td th:text="${blooddonation.id}"></td>
+                <td th:text="${blooddonation.date}"></td>
+                <td th:text="${blooddonation.location}"></td>
+                <td th:text="${blooddonation.quantity}"></td>
+            </tr>
+                    <a th:href="@{'/blooddonations/' + ${blooddonations.id}}">Details</a>
+                </td>
+            </tbody>
+        </table>
+    </div>
+    <div th:if="${ #lists.isEmpty(blooddonations)}">
+        No Blood Donations found!
+    </div>
+    <!--for secretary button-->
+    <a href="/blooddonations/add_donation" class="btn btn-primary" role="button">Record new Donation</a>
+</blooddonations>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Blood Donation Eligibility</title>
+</head>
+<body>
+<div class="container">
+  <h2>Blood Donation Eligibility Questionnaire</h2>
+
+  <form th:action="@{/donate/check-eligibility}" method="post">
+
+    <form th:action="@{/donate/check-eligibility}" method="post">
+      <!-- Health Questions -->
+      <div class="question">
+        <p>Are you healthy?</p>
+        <input type="radio" id="healthGoodYes" name="healthGood" value="yes">
+        <label for="healthGoodYes">Yes</label>
+        <input type="radio" id="healthGoodNo" name="healthGood" value="no">
+        <label for="healthGoodNo">No</label>
+      </div>
+
+      <div class="question">
+        <p>Are you currently free of cold, flu, sore throat, or any other infection?</p>
+        <input type="radio" id="noInfectionYes" name="noInfection" value="yes">
+        <label for="noInfectionYes">Yes</label>
+        <input type="radio" id="noInfectionNo" name="noInfection" value="no">
+        <label for="noInfectionNo">No</label>
+      </div>
+
+      <div class="question">
+        <p>Have you had tattoos or body piercings in the last 6 months?</p>
+        <input type="radio" id="noTattooPiercingYes" name="noTattooPiercing" value="yes">
+        <label for="noTattooPiercingYes">Yes</label>
+        <input type="radio" id="noTattooPiercingNo" name="noTattooPiercing" value="no">
+        <label for="noTattooPiercingNo">No</label>
+      </div>
+
+      <div class="question">
+        <p>Have you gotten any procedures (minor in 24 hours, major in a month)?</p>
+        <input type="radio" id="noDentalWorkYes" name="noDentalWork" value="yes">
+        <label for="noDentalWorkYes">Yes</label>
+        <input type="radio" id="noDentalWorkNo" name="noDentalWork" value="no">
+        <label for="noDentalWorkNo">No</label>
+      </div>
+
+      <!-- Travel Questions -->
+      <div class="question">
+        <p>Have you travelled to areas with mosquito-borne infections recently?</p>
+        <input type="radio" id="noTravelYes" name="noTravel" value="yes">
+        <label for="noTravelYes">Yes</label>
+        <input type="radio" id="noTravelNo" name="noTravel" value="no">
+        <label for="noTravelNo">No</label>
+      </div>
+
+      <!-- Behaviour Questions -->
+      <div class="question">
+        <p>Have you has 'at risk' sexual activity in the past 12 months?</p>
+        <input type="radio" id="noRiskBehaviorYes" name="noRiskBehavior" value="yes">
+        <label for="noRiskBehaviorYes">Yes</label>
+        <input type="radio" id="noRiskBehaviorNo" name="noRiskBehavior" value="no">
+        <label for="noRiskBehaviorNo">No</label>
+      </div>
+
+      <div class="question">
+        <p>Have you never had a positive test for HIV or injected recreational drugs?</p>
+        <input type="radio" id="noHIVDrugsYes" name="noHIVDrugs" value="yes">
+        <label for="noHIVDrugsYes">Yes</label>
+        <input type="radio" id="noHIVDrugsNo" name="noHIVDrugs" value="no">
+        <label for="noHIVDrugsNo">No</label>
+      </div>
+      <!-- Pregnancy and Breastfeeding Questions -->
+      <div class="question">
+        <p>Have you been pregnant or given birth in the last 9 months?</p>
+        <input type="radio" id="notRecentlyPregnantYes" name="notRecentlyPregnant" value="yes">
+        <label for="notRecentlyPregnantYes">Yes</label>
+        <input type="radio" id="notRecentlyPregnantNo" name="notRecentlyPregnant" value="no">
+        <label for="notRecentlyPregnantNo">No</label>
+      </div>
+
+      <div class="question">
+        <p>Are you currently breastfeeding?</p>
+        <input type="radio" id="notBreastfeedingYes" name="notBreastfeeding" value="yes">
+        <label for="notBreastfeedingYes">Yes</label>
+        <input type="radio" id="notBreastfeedingNo" name="notBreastfeeding" value="no">
+        <label for="notBreastfeedingNo">No</label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    </div>
+
+<!-- Include the footer fragment -->
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

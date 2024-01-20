@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login as citizen</title>
+  <th:block th:insert="fragments/header :: header"></th:block>
+</head>
+<body>
+<div th:insert="fragments/menu :: menu"></div>
+<main>
+  <div class="container">
+    <form th:action="@{/citizens/login}" method="post">
+      <div class="form-group">
+        <label for="citizenID">Citizen ID</label>
+        <input type="text" id="citizenID" name="id" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</main>
+<div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

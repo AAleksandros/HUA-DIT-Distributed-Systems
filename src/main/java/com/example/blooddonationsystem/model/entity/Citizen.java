@@ -1,34 +1,74 @@
 package com.example.blooddonationsystem.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import java.util.List;
 
 @Entity
-@Table(name="citizen")
+@Table(name = "citizen")
 public class Citizen {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
     private Integer id;
+
+    @NotBlank
+    @Size(max = 50)
     @Column(name = "first_name")
     private String firstName;
-    @Column(name = "last_name ")
+
+    @NotBlank
+    @Size(max = 50)
+    @Column(name = "last_name")
     private String lastName;
-    @Column(name = "age")
-    private Integer age;
-    @Column(name="address")
-    private String address;
-    @Column(name = "phone_number")
-    private String phoneNumber;
-    @Column(name = "blood_type")
-    private String bloodType;
-    @Column(name ="email")
+
+    @NotBlank
+    @Size(max = 120)
+    private String password;
+
+    @NotBlank
+    @Size(max = 50)
+    @Email
     private String email;
 
-    public Integer getCitizenID() {
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "blood_type")
+    private String bloodType;
+
+    @Column(name = "age")
+    private Integer age;
+
+    @ManyToMany(mappedBy = "citizens", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
+    private List<BloodDonation> bloodDonations;
+
+    // Constructors, getters, and setters
+
+    public Citizen() {
+    }
+
+    public Citizen(Integer id, String firstName, String lastName, Integer age, String phoneNumber, String email, String address, String bloodType, String password) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.bloodType = bloodType;
+        this.password = password;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setCitizenID(Integer citizenID) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -48,28 +88,12 @@ public class Citizen {
         this.lastName = lastName;
     }
 
-    public int getAge() {
-        return age;
+    public String getPassword() {
+        return password;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getBloodType() {
-        return bloodType;
-    }
-
-    public void setBloodType(String bloodType) {
-        this.bloodType = bloodType;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -80,6 +104,14 @@ public class Citizen {
         this.email = email;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -88,21 +120,28 @@ public class Citizen {
         this.address = address;
     }
 
-    public Citizen() {
+    public String getBloodType() {
+        return bloodType;
     }
 
-
-    public Citizen(Integer citizenID, String firstName, String lastName, int age, String phoneNumber,String email,String address, String bloodType) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.phoneNumber = phoneNumber;
-        this.email = email;
-        this.address=address;
+    public void setBloodType(String bloodType) {
         this.bloodType = bloodType;
+    }
 
+    public Integer getAge() {
+        return age;
+    }
 
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public List<BloodDonation> getBloodDonations() {
+        return bloodDonations;
+    }
+
+    public void setBloodDonations(List<BloodDonation> bloodDonations) {
+        this.bloodDonations = bloodDonations;
     }
 
     @Override

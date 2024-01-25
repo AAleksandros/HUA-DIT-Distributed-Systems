@@ -1,71 +1,117 @@
-
 package com.example.blooddonationsystem.model.controller;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
-import jakarta.annotation.PostConstruct;
+import com.example.blooddonationsystem.model.entity.BloodDonation;
+import com.example.blooddonationsystem.model.repository.CitizenRepository;
+import com.example.blooddonationsystem.model.repository.BloodDonationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.*;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 @Controller
-@RequestMapping("citizens")
-public class  CitizenController {
-    private List<Citizen> citizens = new ArrayList<Citizen>();
+@RequestMapping("/citizens")
+public class CitizenController {
 
-    @PostConstruct
-    public void setup() {
-        Citizen ctzn1 = new Citizen(1, "Alex", "Alexi", 24,"1234", "alexalexi@hua.gr", "AD1+", "A+");
-        Citizen ctzn2 = new Citizen(2, "Dina", "Diamanti", 24, "123456789", "dinadiam@hua.gr","AD2","B+");
-        citizens.add(ctzn1);
-        citizens.add(ctzn2);
-    }
+    @Autowired
+    private CitizenRepository citizenRepository;
 
-    @GetMapping("/details")
-    public String showCitizen(Model model) {
-        model.addAttribute("citizens", citizens);
-        return "citizens";
-    }
-
-    @GetMapping("{id}")
-    public String showCitizen(@PathVariable Integer id, Model model) {
-        Citizen ctzn = null;
-        for (Citizen c : citizens) {
-            if (c.getCitizenID().equals(id)) {
-                ctzn = c;
-                break;
-            }
-        }
-        if (ctzn != null) {
-            List<Citizen> citizenList = new ArrayList<>();
-            citizenList.add(ctzn);
-            model.addAttribute("citizens", citizenList);
-        }
-        return "citizens";
-    }
-
-    @GetMapping("delete/{id}")
-    public String deleteCitizen(@PathVariable Integer id, Model model) {
-        citizens.removeIf(citizen -> citizen.getCitizenID().equals(id));
-        model.addAttribute("citizens", citizens);
-        return "citizens";
-    }
+    @Autowired
+    private BloodDonationRepository bloodDonationRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
-        Citizen citizen = new Citizen();
-        model.addAttribute("citizens", new Citizen());
+        model.addAttribute("citizen", new Citizen());
         return "register";
     }
 
     @PostMapping("/register")
-    public String showRegistrationForm(@ModelAttribute("citizen") Citizen citizen, Model model) {
-        citizens.add(citizen);
-        model.addAttribute("citizens", citizens);
-        return "redirect:/citizens";
+    public String registerCitizen(@ModelAttribute("citizen") Citizen citizen, RedirectAttributes redirectAttributes) {
+        String encodedPassword = passwordEncoder.encode(citizen.getPassword());
+        citizen.setPassword(encodedPassword);
+        Citizen savedCitizen = citizenRepository.save(citizen);
+        redirectAttributes.addAttribute("id", savedCitizen.getId());
+        return "redirect:/citizens/success";
     }
+
+    @GetMapping("/success")
+    public String registrationSuccess(@RequestParam("id") Integer citizenId, Model model) {
+        Citizen citizen = citizenRepository.findById(citizenId).orElse(null);
+        model.addAttribute("citizen", citizen);
+        model.addAttribute("message", "Registration successful!");
+        return "registration_successful";
+    }
+
+    @GetMapping("/dashboard")
+    public String showDashboard(Model model, @RequestParam("id") Integer citizenId) {
+        Citizen citizen = citizenRepository.findById(citizenId).orElse(null);
+        if (citizen == null || !hasRole("ROLE_USER")) {
+            return "redirect:/login";
+        }
+        model.addAttribute("citizen", citizen);
+        return "dashboard";
+    }
+
+    private boolean hasRole(String role) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(role));
+    }
+
+
+
+    @GetMapping("/application")
+    public String showApplicationForm(Model model) {
+        model.addAttribute("donationApplication", new BloodDonation());
+        return "donation_application";
+    }
+
+    @PostMapping("/apply-donation")
+    public String applyForDonation(@ModelAttribute("donationApplication") BloodDonation application) {
+        // Process the application
+        // Save the application to the database (assuming you have a repository for this)
+        return "redirect:/citizens/dashboard";
+    }
+
+    @GetMapping("/profile")
+    public String viewProfile(Model model, @RequestParam("id") Integer citizenId) {
+        Citizen citizen = citizenRepository.findById(citizenId).orElse(null);
+        model.addAttribute("citizen", citizen);
+        return "profile";
+    }
+
+    @PostMapping("/update-profile")
+    public String updateProfile(@ModelAttribute("citizen") Citizen updatedCitizen) {
+        Citizen existingCitizen = citizenRepository.findById(updatedCitizen.getId()).orElse(null);
+        if (existingCitizen != null) {
+            if (updatedCitizen.getPassword() != null && !updatedCitizen.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(updatedCitizen.getPassword());
+                existingCitizen.setPassword(encodedPassword);
+            }
+            // Update other fields of existingCitizen as needed
+            citizenRepository.save(existingCitizen);
+        }
+        return "redirect:/citizens/dashboard?id=" + existingCitizen.getId();
+    }
+
+    @GetMapping("/my-donations")
+    public String viewMyDonations(Model model, @RequestParam("id") Integer citizenId) {
+        List<BloodDonation> donations = bloodDonationRepository.findDonationsByCitizenId(citizenId);
+        model.addAttribute("donations", donations);
+        return "my_donations";
+    }
+
 
     @GetMapping("/login")
     public String login() {
@@ -74,13 +120,13 @@ public class  CitizenController {
 
     @PostMapping("/login")
     public String loginCitizen(@RequestParam Integer id, Model model) {
-        for (Citizen citizen : citizens) {
-            if (citizen.getCitizenID().equals(id)) {
-                model.addAttribute("citizen", citizen);
-                return "dashboard";
-            }
+        Citizen citizen = citizenRepository.findById(id).orElse(null);
+        if (citizen != null) {
+            model.addAttribute("citizen", citizen);
+            return "redirect:/citizens/dashboard?id=" + citizen.getId();
+        } else {
+            model.addAttribute("error", "No citizen found with that ID");
+            return "login";
         }
-        model.addAttribute("error", "No citizen found with that ID");
-        return "login";
     }
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/menu :: menu}"></div>
+
+<main class="container">
+  <h2 th:text="${message}"></h2>
+  <p th:if="${citizen != null}" th:text="'Citizen ID: ' + ${citizen.id}"></p>
+  <a th:href="@{/citizens/dashboard(id=${citizen.id})}" class="btn btn-primary">Go to Dashboard</a>
+</main>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

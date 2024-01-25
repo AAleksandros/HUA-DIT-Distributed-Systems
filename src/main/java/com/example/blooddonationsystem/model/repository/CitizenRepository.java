@@ -1,4 +1,7 @@
 package com.example.blooddonationsystem.model.repository;
 
-public interface CitizenRepository {
+import com.example.blooddonationsystem.model.entity.Citizen;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CitizenRepository extends JpaRepository<Citizen, Integer> {
 }

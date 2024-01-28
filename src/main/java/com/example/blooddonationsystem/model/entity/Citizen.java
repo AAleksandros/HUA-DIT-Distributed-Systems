@@ -47,7 +47,9 @@ public class Citizen {
     @ManyToMany(mappedBy = "citizens", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
     private List<BloodDonation> bloodDonations;
 
-    // Constructors, getters, and setters
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 
     public Citizen() {
     }
@@ -142,6 +144,14 @@ public class Citizen {
 
     public void setBloodDonations(List<BloodDonation> bloodDonations) {
         this.bloodDonations = bloodDonations;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

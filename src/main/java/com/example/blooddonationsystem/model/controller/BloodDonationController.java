@@ -23,8 +23,4 @@ public class   BloodDonationController {
         return "blooddonations";
     }
 
-
-
-
-
 }

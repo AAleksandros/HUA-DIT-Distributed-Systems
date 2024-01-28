@@ -1,28 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Dashboard</title>
-    <!-- Add your CSS links here -->
-</head>
+<head th:replace="~{fragments/header :: header}"></head>
 <body>
-<h1>Welcome to your Dashboard, <span th:text="${citizen.firstName}"></span>!</h1>
-
-<div>
-    <a th:href="@{/citizens/application}">Application for Blood Donation</a>
-</div>
-<div>
-    <a th:href="@{/blood-donations/available}">Blood Donations Available</a>
-</div>
-<div>
-    <a th:href="@{/citizens/my-donations(id=${citizen.id})}">My Blood Donation List</a>
-</div>
-<div>
-    <a th:href="@{/citizens/profile(id=${citizen.id})}">My Profile</a>
-</div>
-<div>
-    <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Logout" />
-    </form>
-</div>
+<div th:replace="~{fragments/citizen-menu :: menu}"></div>
+<main class="container">
+    <h2>Welcome to Your Dashboard</h2>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

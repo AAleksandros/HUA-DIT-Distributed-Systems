@@ -1,3 +1,4 @@
+<!-- menu.html -->
 <menu>
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
@@ -8,16 +9,17 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="/">Home</a>
+            <a class="nav-link" th:href="@{/}">Home</a> <!-- Use Thymeleaf syntax to ensure context path is included -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/citizens/register">Register as Citizen</a>
+            <a class="nav-link" th:href="@{/register}">Register as Citizen</a> <!-- Direct link to the registration form -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/citizens/login">Login as Citizen</a>
+            <a class="nav-link" th:href="@{/login}">Login as Citizen</a> <!-- Direct link to the login page -->
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/secretary-login">Login as Secretary</a>
+            <!-- If you have a separate login page for secretary, update the href accordingly -->
+            <a class="nav-link" th:href="@{/secretary-login}">Login as Secretary</a>
           </li>
         </ul>
       </div>

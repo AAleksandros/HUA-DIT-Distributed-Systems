@@ -1,7 +1,10 @@
 package com.example.blooddonationsystem.model.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -11,28 +14,32 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
+
     @Bean
-    public BCryptPasswordEncoder securityPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/", "/home", "/citizens/register", "/citizens/success", "/css/**", "/js/**").permitAll()
+                .authorizeRequests(authz -> authz
+                        .requestMatchers("/", "/home", "/register", "/registration-successful", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .formLogin((form) -> form
+                .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/citizens/dashboard", true)
+                        .defaultSuccessUrl("/citizens/dashboard", true) // Add this line
                         .permitAll()
                 )
-                .logout((logout) -> logout
-                        .logoutSuccessUrl("/home")
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
-
         return http.build();
+
     }
 }

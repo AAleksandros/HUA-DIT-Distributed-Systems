@@ -1,23 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Login as citizen</title>
-  <th:block th:insert="fragments/header :: header"></th:block>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
 <body>
-<div th:insert="fragments/menu :: menu"></div>
-<main>
-  <div class="container">
-    <form th:action="@{/citizens/login}" method="post">
-      <div class="form-group">
-        <label for="citizenID">Citizen ID</label>
-        <input type="text" id="citizenID" name="id" class="form-control">
-      </div>
+<div th:replace="~{fragments/menu :: menu}"></div>
+
+<main class="container">
+  <h2>Login as Citizen</h2>
+  <form th:action="@{/login}" method="post">
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="username" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" class="form-control" required>
+    </div>
+    <div class="form-group">
       <button type="submit" class="btn btn-primary">Login</button>
-    </form>
-  </div>
+    </div>
+  </form>
+  <p>Don't have an account? <a th:href="@{/register}">Register here</a>.</p>
 </main>
-<div th:replace="fragments/footer :: footer"></div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

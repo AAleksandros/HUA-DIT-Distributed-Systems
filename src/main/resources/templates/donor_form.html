@@ -1,25 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Blood Donation Eligibility</title>
-</head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
 <body>
-<div class="container">
+<div th:replace="~{fragments/citizen-menu :: menu}"></div>
+<main class="container">
   <h2>Blood Donation Eligibility Questionnaire</h2>
+    <form th:action="@{/bloodDonations/apply}" th:object="${healthHistory}" method="post">
 
-  <form th:action="@{/donate/check-eligibility}" method="post">
-
-    <form th:action="@{/donate/check-eligibility}" method="post">
       <!-- Health Questions -->
-      <div class="question">
-        <p>Are you healthy?</p>
-        <input type="radio" id="healthGoodYes" name="healthGood" value="yes">
-        <label for="healthGoodYes">Yes</label>
-        <input type="radio" id="healthGoodNo" name="healthGood" value="no">
-        <label for="healthGoodNo">No</label>
-      </div>
-
       <div class="question">
         <p>Are you currently free of cold, flu, sore throat, or any other infection?</p>
         <input type="radio" id="noInfectionYes" name="noInfection" value="yes">
@@ -86,11 +74,10 @@
         <label for="notBreastfeedingNo">No</label>
       </div>
 
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-    </div>
+      <button type="submit" class="btn btn-primary">Submit Application</button>
+  </form>
+    </main>
 
-<!-- Include the footer fragment -->
-<div th:replace="fragments/footer :: footer"></div>
-</body>
+    <div th:replace="fragments/footer :: footer"></div>
+ </body>
 </html>

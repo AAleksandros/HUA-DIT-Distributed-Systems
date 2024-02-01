@@ -32,7 +32,7 @@ public class SecurityConfig {
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
-                        .defaultSuccessUrl("/citizens/dashboard", true) // Add this line
+                        .defaultSuccessUrl("/citizens/dashboard", true)
                         .permitAll()
                 )
                 .logout(logout -> logout

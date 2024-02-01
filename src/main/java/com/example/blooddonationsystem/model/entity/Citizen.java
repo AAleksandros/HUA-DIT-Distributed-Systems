@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,7 @@ import java.util.List;
 public class Citizen {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @NotBlank
     @Size(max = 50)
@@ -51,26 +52,45 @@ public class Citizen {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
+    @OneToOne(mappedBy = "citizen", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    private DonationApplication donationApplication;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     public Citizen() {
     }
 
-    public Citizen(Integer id, String firstName, String lastName, Integer age, String phoneNumber, String email, String address, String bloodType, String password) {
-        this.id = id;
+    public Citizen(String firstName, String lastName, String password, String email, String phoneNumber, String address, String bloodType, Integer age) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.age = age;
-        this.phoneNumber = phoneNumber;
+        this.password = password;
         this.email = email;
+        this.phoneNumber = phoneNumber;
         this.address = address;
         this.bloodType = bloodType;
-        this.password = password;
+        this.age = age;
     }
 
-    public Integer getId() {
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    // Getters and Setters
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -154,17 +174,11 @@ public class Citizen {
         this.user = user;
     }
 
-    @Override
-    public String toString() {
-        return "Citizen{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", phoneNumber='" + phoneNumber + '\'' +
-                ", bloodType='" + bloodType + '\'' +
-                ", email='" + email + '\'' +
-                ", address='" + address + '\'' +
-                '}';
+    public DonationApplication getDonationApplication() {
+        return donationApplication;
+    }
+
+    public void setDonationApplication(DonationApplication donationApplication) {
+        this.donationApplication = donationApplication;
     }
 }

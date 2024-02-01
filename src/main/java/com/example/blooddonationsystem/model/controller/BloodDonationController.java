@@ -6,12 +6,14 @@ import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import com.example.blooddonationsystem.model.service.BloodDonationService;
 import com.example.blooddonationsystem.model.service.DonationApplicationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
 
@@ -31,25 +33,38 @@ public class BloodDonationController {
     private CitizenRepository citizenRepository;
 
     @GetMapping("/apply")
-    public String showApplicationForm(Model model) {
+    public String showApplicationForm(Model model, Authentication authentication) {
+        String email = authentication.getName();
+        Citizen citizen = citizenRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Citizen not found"));
+
+        boolean canApply = donationApplicationService.canCitizenApply(citizen.getId());
+        if (!canApply) {
+            return "application_denied"; // Redirect to a "denied" page if the citizen already has a pending or approved application
+        }
+
         model.addAttribute("donationApplication", new DonationApplication());
         return "donor_form";
     }
 
     @PostMapping("/apply")
-    public String applyForDonation(@ModelAttribute("donationApplication") DonationApplication donationApplication, Authentication authentication, RedirectAttributes redirectAttributes) {
-        String email = authentication.getName();
-        Citizen citizen = citizenRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Citizen not found"));
-        donationApplication.setCitizen(citizen);
-        donationApplication.setStatus(DonationApplication.ApplicationStatus.PENDING);
-        donationApplicationService.createApplication(donationApplication);
-        redirectAttributes.addFlashAttribute("successMessage", "Application submitted successfully!");
-        return "redirect:/bloodDonations/application-successful";
-    }
+    public String applyForDonation(@Valid @ModelAttribute("donationApplication") DonationApplication donationApplication, BindingResult result, Authentication authentication, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "donor_form";
+        }
 
-    @GetMapping("/application-successful")
-    public String applicationSuccessful() {
-        return "application_successful";
+        try {
+            String email = authentication.getName();
+            Citizen citizen = citizenRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Citizen not found"));
+            donationApplication.setCitizen(citizen);
+            donationApplication.setStatus(DonationApplication.ApplicationStatus.PENDING);
+            donationApplicationService.createApplication(donationApplication);
+            redirectAttributes.addFlashAttribute("successMessage", "Application submitted successfully!");
+            return "redirect:/bloodDonations/my-applications";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "An error occurred while submitting your application. Please try again.");
+            return "redirect:/bloodDonations/apply";
+        }
     }
 
     @GetMapping("/my-applications")
@@ -60,7 +75,6 @@ public class BloodDonationController {
         model.addAttribute("applications", applications);
         return "my_applications";
     }
-
 
     // Endpoint for the secretary to view all donation applications
     @GetMapping("/applications")

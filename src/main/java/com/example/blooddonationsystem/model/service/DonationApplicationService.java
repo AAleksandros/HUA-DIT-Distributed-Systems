@@ -49,6 +49,7 @@ public class DonationApplicationService {
     }
 
 
+
     public List<DonationApplication> findAllApplications() {
         return donationApplicationRepository.findAll();
     }
@@ -56,6 +57,11 @@ public class DonationApplicationService {
     public void deleteApplication(Long applicationId) {
         donationApplicationRepository.deleteById(applicationId);
     }
-
+    public boolean canCitizenApply(Long citizenId) {
+        List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
+        return applications.stream().noneMatch(app ->
+                app.getStatus() == DonationApplication.ApplicationStatus.PENDING ||
+                        app.getStatus() == DonationApplication.ApplicationStatus.APPROVED);
+    }
     // Additional methods as needed
 }

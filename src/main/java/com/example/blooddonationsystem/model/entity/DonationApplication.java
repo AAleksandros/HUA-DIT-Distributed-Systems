@@ -2,6 +2,9 @@ package com.example.blooddonationsystem.model.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "donation_application")
@@ -28,21 +31,33 @@ public class DonationApplication {
     private LocalDateTime approvalDate;
 
     // Health History Attributes
+    @NotNull(message = "This field is required")
     private boolean isFreeOfInfections;
+    @NotNull(message = "This field is required")
     private boolean hasNoTattoosOrPiercings;
+    @NotNull(message = "This field is required")
     private boolean hasNoRecentProcedures;
+    @NotNull(message = "This field is required")
     private boolean hasNoTravelToRiskAreas;
+    @NotNull(message = "This field is required")
     private boolean hasNoRiskBehavior;
+    @NotNull(message = "This field is required")
     private boolean hasNoHIVOrDrugUse;
+    @NotNull(message = "This field is required")
     private boolean isNotRecentlyPregnant;
+    @NotNull(message = "This field is required")
     private boolean isNotBreastfeeding;
+    @NotNull(message = "This field is required")
+    private boolean hasAIDS;
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
 
     public DonationApplication() {
     }
 
-    public DonationApplication(Citizen citizen, ApplicationStatus status, boolean isFreeOfInfections, boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean isNotRecentlyPregnant, boolean isNotBreastfeeding) {
+    public DonationApplication(Long id, Citizen citizen, boolean isFreeOfInfections, boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean isNotRecentlyPregnant, boolean isNotBreastfeeding, boolean hasAIDS, String rejectionReason) {
+        this.id = id;
         this.citizen = citizen;
-        this.status = status;
         this.isFreeOfInfections = isFreeOfInfections;
         this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
         this.hasNoRecentProcedures = hasNoRecentProcedures;
@@ -51,6 +66,8 @@ public class DonationApplication {
         this.hasNoHIVOrDrugUse = hasNoHIVOrDrugUse;
         this.isNotRecentlyPregnant = isNotRecentlyPregnant;
         this.isNotBreastfeeding = isNotBreastfeeding;
+        this.hasAIDS = hasAIDS;
+        this.rejectionReason = rejectionReason;
     }
 
     @PrePersist
@@ -92,26 +109,6 @@ public class DonationApplication {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public LocalDateTime getApprovalDate() {
-        return approvalDate;
-    }
-
-    public void setApprovalDate(LocalDateTime approvalDate) {
-        this.approvalDate = approvalDate;
-    }
-
     public boolean isFreeOfInfections() {
         return isFreeOfInfections;
     }
@@ -120,7 +117,7 @@ public class DonationApplication {
         isFreeOfInfections = freeOfInfections;
     }
 
-    public boolean hasNoTattoosOrPiercings() {
+    public boolean isHasNoTattoosOrPiercings() {
         return hasNoTattoosOrPiercings;
     }
 
@@ -128,7 +125,7 @@ public class DonationApplication {
         this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
     }
 
-    public boolean hasNoRecentProcedures() {
+    public boolean isHasNoRecentProcedures() {
         return hasNoRecentProcedures;
     }
 
@@ -136,7 +133,7 @@ public class DonationApplication {
         this.hasNoRecentProcedures = hasNoRecentProcedures;
     }
 
-    public boolean hasNoTravelToRiskAreas() {
+    public boolean isHasNoTravelToRiskAreas() {
         return hasNoTravelToRiskAreas;
     }
 
@@ -144,7 +141,7 @@ public class DonationApplication {
         this.hasNoTravelToRiskAreas = hasNoTravelToRiskAreas;
     }
 
-    public boolean hasNoRiskBehavior() {
+    public boolean isHasNoRiskBehavior() {
         return hasNoRiskBehavior;
     }
 
@@ -152,7 +149,7 @@ public class DonationApplication {
         this.hasNoRiskBehavior = hasNoRiskBehavior;
     }
 
-    public boolean hasNoHIVOrDrugUse() {
+    public boolean isHasNoHIVOrDrugUse() {
         return hasNoHIVOrDrugUse;
     }
 
@@ -174,6 +171,22 @@ public class DonationApplication {
 
     public void setNotBreastfeeding(boolean notBreastfeeding) {
         isNotBreastfeeding = notBreastfeeding;
+    }
+
+    public boolean isHasAIDS() {
+        return hasAIDS;
+    }
+
+    public void setHasAIDS(boolean hasAIDS) {
+        this.hasAIDS = hasAIDS;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 
     public enum ApplicationStatus {

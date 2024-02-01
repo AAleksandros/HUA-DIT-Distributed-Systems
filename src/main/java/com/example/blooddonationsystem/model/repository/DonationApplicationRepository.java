@@ -8,6 +8,7 @@ import java.util.List;
 public interface DonationApplicationRepository extends JpaRepository<DonationApplication, Long> {
     List<DonationApplication> findByCitizenId(Long citizenId);
 
+
     DonationApplication findTopByCitizenIdAndStatusOrderByApprovalDateDesc(Long citizenId, DonationApplication.ApplicationStatus status);
 
     // Example method to find applications based on health history criteria now included in DonationApplication

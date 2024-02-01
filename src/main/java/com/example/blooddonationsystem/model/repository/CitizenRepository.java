@@ -13,4 +13,5 @@ public interface CitizenRepository extends JpaRepository<Citizen, Long> { // Ens
     @Query("SELECT c FROM Citizen c LEFT JOIN FETCH c.donationApplication")
     List<Citizen> findAllWithDonationApplication();
 
+
 }

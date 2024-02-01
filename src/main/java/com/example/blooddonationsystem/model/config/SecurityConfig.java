@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -21,11 +22,10 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
+
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/", "/home", "/register", "/registration-successful", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
@@ -36,10 +36,16 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout")) // Specify the logout URL
+                        .logoutSuccessUrl("/login?logout") // Redirect after logout
+                        .invalidateHttpSession(true) // Invalidate session
+                        .clearAuthentication(true) // Clear authentication
+                        .deleteCookies("JSESSIONID") // Delete session cookie
                         .permitAll()
                 );
-        return http.build();
 
+                 // Only disable CSRF if absolutely necessary and you understand the security implications
+
+        return http.build();
     }
 }

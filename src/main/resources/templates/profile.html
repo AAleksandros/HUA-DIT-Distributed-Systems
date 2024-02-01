@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div th:replace="~{fragments/citizen-menu :: menu}"></div>
+<main class="container">
+    <h2>Your Profile</h2>
+    <div>
+        <p><strong>First Name:</strong> <span th:text="${citizen.firstName}"></span></p>
+        <p><strong>Last Name:</strong> <span th:text="${citizen.lastName}"></span></p>
+        <p><strong>Age:</strong> <span th:text="${citizen.age}"></span></p>
+        <p><strong>Phone Number:</strong> <span th:text="${citizen.phoneNumber}"></span></p>
+        <p><strong>Email:</strong> <span th:text="${citizen.email}"></span></p>
+        <p><strong>Address:</strong> <span th:text="${citizen.address}"></span></p>
+        <p><strong>Blood Type:</strong> <span th:text="${citizen.bloodType}"></span></p>
+    </div>
+    <a th:href="@{/citizens/profile/edit}" class="btn btn-primary">Edit Profile</a>
+    <a th:href="@{/citizens/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+</main>
+<div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+</html>

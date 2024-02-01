@@ -63,6 +63,30 @@ public class UserService implements UserDetailsService {
         citizen.setUser(savedUser);
         citizenRepository.save(citizen); // Save the Citizen entity
     }
+    @Transactional
+    public void updateCitizenAndUserProfiles(Citizen updatedCitizen, String email) {
+        Citizen existingCitizen = citizenRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Citizen not found"));
+
+        // Update Citizen fields
+        existingCitizen.setFirstName(updatedCitizen.getFirstName());
+        existingCitizen.setLastName(updatedCitizen.getLastName());
+        existingCitizen.setAge(updatedCitizen.getAge());
+        existingCitizen.setPhoneNumber(updatedCitizen.getPhoneNumber());
+        existingCitizen.setAddress(updatedCitizen.getAddress());
+        existingCitizen.setBloodType(updatedCitizen.getBloodType());
+
+        // Update password if provided and different
+        if (!updatedCitizen.getPassword().isEmpty() && !passwordEncoder.matches(updatedCitizen.getPassword(), existingCitizen.getPassword())) {
+            String encodedPassword = passwordEncoder.encode(updatedCitizen.getPassword());
+            existingCitizen.setPassword(encodedPassword);
+            existingCitizen.getUser().setPassword(encodedPassword); // Also update the associated User entity
+            userRepository.save(existingCitizen.getUser());
+        }
+
+        citizenRepository.save(existingCitizen);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(username)

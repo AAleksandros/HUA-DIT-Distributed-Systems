@@ -22,16 +22,17 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-
                 .authorizeRequests(authz -> authz
                         .requestMatchers("/", "/home", "/register", "/registration-successful", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
+                        .failureUrl("/login?error=true") // Redirect to /login with an error parameter on failure
                         .defaultSuccessUrl("/citizens/dashboard", true)
                         .permitAll()
                 )
@@ -44,8 +45,10 @@ public class SecurityConfig {
                         .permitAll()
                 );
 
-                 // Only disable CSRF if absolutely necessary and you understand the security implications
+        // Only disable CSRF if absolutely necessary and you understand the security implications
 
         return http.build();
     }
+
+
 }

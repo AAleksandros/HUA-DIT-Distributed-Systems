@@ -5,6 +5,10 @@
 <div th:replace="~{fragments/citizen-menu :: menu}"></div>
 <main class="container">
     <h2>Your Profile</h2>
+
+    <!-- Display success message -->
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
     <div>
         <p><strong>First Name:</strong> <span th:text="${citizen.firstName}"></span></p>
         <p><strong>Last Name:</strong> <span th:text="${citizen.lastName}"></span></p>

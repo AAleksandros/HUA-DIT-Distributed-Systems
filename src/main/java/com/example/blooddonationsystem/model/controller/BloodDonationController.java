@@ -84,7 +84,6 @@ public class BloodDonationController {
         return "secretary_applications"; // View to list all applications for the secretary
     }
 
-
     // Endpoint for the secretary to approve or reject a donation application
     @PostMapping("/applications/{applicationId}/status")
     public String updateApplicationStatus(@PathVariable Long applicationId, @RequestParam DonationApplication.ApplicationStatus status, RedirectAttributes redirectAttributes) {

@@ -5,6 +5,9 @@
 <div th:replace="~{fragments/menu :: menu}"></div>
 
 <main class="container">
+  <div th:if="${loginError}" class="alert alert-danger" role="alert">
+    <p th:text="${loginError}"></p>
+  </div>
   <h2>Login as Citizen</h2>
   <form th:action="@{/login}" method="post">
     <div class="form-group">

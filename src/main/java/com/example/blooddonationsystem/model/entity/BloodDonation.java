@@ -9,7 +9,7 @@ import java.util.List;
 @Table(name = "blood_donation")
 public class BloodDonation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column

@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "citizen")
 public class Citizen {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
@@ -58,8 +58,6 @@ public class Citizen {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     public Citizen() {
     }
@@ -80,12 +78,7 @@ public class Citizen {
         createdAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -180,5 +173,20 @@ public class Citizen {
 
     public void setDonationApplication(DonationApplication donationApplication) {
         this.donationApplication = donationApplication;
+    }
+
+    @Override
+    public String toString() {
+        return "Citizen{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", address='" + address + '\'' +
+                ", bloodType='" + bloodType + '\'' +
+                ", age=" + age +
+                '}';
     }
 }

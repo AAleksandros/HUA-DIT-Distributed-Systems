@@ -1,8 +1,6 @@
 package com.example.blooddonationsystem.model.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -30,34 +28,51 @@ public class DonationApplication {
     @Column(name = "approval_date")
     private LocalDateTime approvalDate;
 
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "processed_by_secretary_id")
+    private Secretary processedBy;
+
+
+    @Column(name = "processed_at")
+    private LocalDateTime processedAt;
+
     // Health History Attributes
     @NotNull(message = "This field is required")
     private boolean isFreeOfInfections;
+
     @NotNull(message = "This field is required")
     private boolean hasNoTattoosOrPiercings;
+
     @NotNull(message = "This field is required")
     private boolean hasNoRecentProcedures;
+
     @NotNull(message = "This field is required")
     private boolean hasNoTravelToRiskAreas;
+
     @NotNull(message = "This field is required")
     private boolean hasNoRiskBehavior;
+
     @NotNull(message = "This field is required")
     private boolean hasNoHIVOrDrugUse;
+
     @NotNull(message = "This field is required")
     private boolean isNotRecentlyPregnant;
+
     @NotNull(message = "This field is required")
     private boolean isNotBreastfeeding;
+
     @NotNull(message = "This field is required")
     private boolean hasAIDS;
+
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
     public DonationApplication() {
     }
 
-    public DonationApplication(Long id, Citizen citizen, boolean isFreeOfInfections, boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean isNotRecentlyPregnant, boolean isNotBreastfeeding, boolean hasAIDS, String rejectionReason) {
-        this.id = id;
+    public DonationApplication(Citizen citizen, ApplicationStatus status, boolean isFreeOfInfections, boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean isNotRecentlyPregnant, boolean isNotBreastfeeding, boolean hasAIDS, String rejectionReason) {
         this.citizen = citizen;
+        this.status = status;
         this.isFreeOfInfections = isFreeOfInfections;
         this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
         this.hasNoRecentProcedures = hasNoRecentProcedures;
@@ -68,19 +83,20 @@ public class DonationApplication {
         this.isNotBreastfeeding = isNotBreastfeeding;
         this.hasAIDS = hasAIDS;
         this.rejectionReason = rejectionReason;
+        this.createdAt = LocalDateTime.now(); // Initialize createdAt to the current time
     }
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
+    // Getters and setters for all fields
     public Long getId() {
         return id;
     }
@@ -109,6 +125,38 @@ public class DonationApplication {
         return createdAt;
     }
 
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getApprovalDate() {
+        return approvalDate;
+    }
+
+    public void setApprovalDate(LocalDateTime approvalDate) {
+        this.approvalDate = approvalDate;
+    }
+
+    public Secretary getProcessedBy() {
+        return processedBy;
+    }
+
+    public void setProcessedBy(Secretary processedBy) {
+        this.processedBy = processedBy;
+    }
+
+    public LocalDateTime getProcessedAt() {
+        return processedAt;
+    }
+
+    public void setProcessedAt(LocalDateTime processedAt) {
+        this.processedAt = processedAt;
+    }
+
     public boolean isFreeOfInfections() {
         return isFreeOfInfections;
     }
@@ -117,7 +165,7 @@ public class DonationApplication {
         isFreeOfInfections = freeOfInfections;
     }
 
-    public boolean isHasNoTattoosOrPiercings() {
+    public boolean hasNoTattoosOrPiercings() {
         return hasNoTattoosOrPiercings;
     }
 
@@ -125,7 +173,7 @@ public class DonationApplication {
         this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
     }
 
-    public boolean isHasNoRecentProcedures() {
+    public boolean hasNoRecentProcedures() {
         return hasNoRecentProcedures;
     }
 
@@ -133,7 +181,7 @@ public class DonationApplication {
         this.hasNoRecentProcedures = hasNoRecentProcedures;
     }
 
-    public boolean isHasNoTravelToRiskAreas() {
+    public boolean hasNoTravelToRiskAreas() {
         return hasNoTravelToRiskAreas;
     }
 
@@ -141,7 +189,7 @@ public class DonationApplication {
         this.hasNoTravelToRiskAreas = hasNoTravelToRiskAreas;
     }
 
-    public boolean isHasNoRiskBehavior() {
+    public boolean hasNoRiskBehavior() {
         return hasNoRiskBehavior;
     }
 
@@ -149,7 +197,7 @@ public class DonationApplication {
         this.hasNoRiskBehavior = hasNoRiskBehavior;
     }
 
-    public boolean isHasNoHIVOrDrugUse() {
+    public boolean hasNoHIVOrDrugUse() {
         return hasNoHIVOrDrugUse;
     }
 
@@ -173,7 +221,7 @@ public class DonationApplication {
         isNotBreastfeeding = notBreastfeeding;
     }
 
-    public boolean isHasAIDS() {
+    public boolean hasAIDS() {
         return hasAIDS;
     }
 

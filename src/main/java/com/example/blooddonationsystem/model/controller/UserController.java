@@ -1,4 +1,4 @@
-package com.example.blooddonationsystem.model.controller;
+/*package com.example.blooddonationsystem.model.controller;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.service.UserService;
@@ -36,3 +36,6 @@ public class UserController {
         return "registration_successful";
     }
 }
+
+
+ */

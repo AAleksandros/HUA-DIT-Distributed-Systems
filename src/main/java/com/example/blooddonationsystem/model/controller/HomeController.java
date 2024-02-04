@@ -1,4 +1,4 @@
-package com.example.blooddonationsystem.model.controller;
+/*package com.example.blooddonationsystem.model.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,3 +13,6 @@ public class HomeController {
         return "home";
     }
 }
+
+
+ */

@@ -1,4 +1,4 @@
-package com.example.blooddonationsystem.model.service;
+/*package com.example.blooddonationsystem.model.service;
 
 import com.example.blooddonationsystem.model.entity.BloodDonation;
 import com.example.blooddonationsystem.model.repository.BloodDonationRepository;
@@ -29,3 +29,6 @@ public class BloodDonationService {
         bloodDonationRepository.deleteById(id);
     }
 }
+
+
+ */

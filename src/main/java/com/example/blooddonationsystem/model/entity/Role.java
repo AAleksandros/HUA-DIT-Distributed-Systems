@@ -5,16 +5,15 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "roles")
 public class Role {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 20)
+    @Column(length = 200)
     private String name;
 
-    public Role() {
-
-    }
+    public Role() {}
 
     public Role(String name) {
         this.name = name;

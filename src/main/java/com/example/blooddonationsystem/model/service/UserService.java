@@ -1,6 +1,7 @@
-package com.example.blooddonationsystem.model.service;
+/*package com.example.blooddonationsystem.model.service;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
+import com.example.blooddonationsystem.model.entity.Secretary;
 import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.entity.Role;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import com.example.blooddonationsystem.model.repository.SecretaryRepository;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -36,6 +38,8 @@ public class UserService implements UserDetailsService {
 
     @Autowired
     private CitizenRepository citizenRepository;
+    @Autowired
+    private SecretaryRepository secretaryRepository;
 
     @Transactional
     public void registerCitizenAsUser(Citizen citizen) {
@@ -100,7 +104,20 @@ public class UserService implements UserDetailsService {
                         .collect(Collectors.toSet())
         );
     }
+    @Transactional
+    public Secretary createSecretary(Secretary secretary) {
+        // Check if the role exists, create if not
+        Role secretaryRole = roleRepository.findByName("ROLE_SECRETARY")
+                .orElseGet(() -> roleRepository.save(new Role("ROLE_SECRETARY")));
 
+        User user = new User();
+        user.setUsername(secretary.getEmail()); // Use email as username
+        user.setPassword(passwordEncoder.encode("defaultPassword")); // Encode a default or provided password
+        user.setRoles(Collections.singleton(secretaryRole)); // Assign the secretary role
+        User savedUser = userRepository.save(user);
+        secretary.setUser(savedUser);
+        return secretaryRepository.save(secretary);
+    }
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -115,3 +132,5 @@ public class UserService implements UserDetailsService {
 
 
 }
+
+ */

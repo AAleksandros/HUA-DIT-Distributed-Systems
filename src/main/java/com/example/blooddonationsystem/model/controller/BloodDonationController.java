@@ -1,4 +1,4 @@
-package com.example.blooddonationsystem.model.controller;
+/*package com.example.blooddonationsystem.model.controller;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
@@ -81,7 +81,7 @@ public class BloodDonationController {
     public String getAllApplications(Model model) {
         List<Citizen> citizensWithApplications = citizenRepository.findAllWithDonationApplication();
         model.addAttribute("citizensWithApplications", citizensWithApplications);
-        return "secretary_applications"; // View to list all applications for the secretary
+        return "review_applications"; // View to list all applications for the secretary
     }
 
     // Endpoint for the secretary to approve or reject a donation application
@@ -92,3 +92,6 @@ public class BloodDonationController {
         return "redirect:/bloodDonations/applications";
     }
 }
+
+
+ */

@@ -45,14 +45,11 @@ public class Citizen {
     @Column(name = "age")
     private Integer age;
 
-    @ManyToMany(mappedBy = "citizens", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH})
-    private List<BloodDonation> bloodDonations;
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 
-    @OneToOne(mappedBy = "citizen", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @OneToOne(mappedBy = "citizen", cascade = CascadeType.MERGE, fetch = FetchType.LAZY, optional = false)
     private DonationApplication donationApplication;
 
     @Column(name = "created_at", updatable = false)
@@ -151,13 +148,6 @@ public class Citizen {
         this.age = age;
     }
 
-    public List<BloodDonation> getBloodDonations() {
-        return bloodDonations;
-    }
-
-    public void setBloodDonations(List<BloodDonation> bloodDonations) {
-        this.bloodDonations = bloodDonations;
-    }
 
     public User getUser() {
         return user;

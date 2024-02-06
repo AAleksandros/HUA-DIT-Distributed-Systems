@@ -11,7 +11,7 @@ public class DonationApplication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "citizen_id", nullable = false)
     private Citizen citizen;
 
@@ -22,8 +22,6 @@ public class DonationApplication {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @Column(name = "approval_date")
     private LocalDateTime approvalDate;
@@ -31,7 +29,6 @@ public class DonationApplication {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "processed_by_secretary_id")
     private Secretary processedBy;
-
 
     @Column(name = "processed_at")
     private LocalDateTime processedAt;
@@ -67,6 +64,8 @@ public class DonationApplication {
     @Column(name = "rejection_reason")
     private String rejectionReason;
 
+
+
     public DonationApplication() {
     }
 
@@ -91,10 +90,7 @@ public class DonationApplication {
         this.createdAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    protected void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+
 
     // Getters and setters for all fields
     public Long getId() {
@@ -125,13 +121,6 @@ public class DonationApplication {
         return createdAt;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 
     public LocalDateTime getApprovalDate() {
         return approvalDate;

@@ -3,7 +3,6 @@ package com.example.blooddonationsystem.model.config;
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.entity.Secretary;
-import com.example.blooddonationsystem.model.entity.BloodDonation;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
@@ -17,7 +16,6 @@ public class RestConfiguration implements RepositoryRestConfigurer {
             RepositoryRestConfiguration config, CorsRegistry cors) {
         config.exposeIdsFor(Citizen.class);
         config.exposeIdsFor(Secretary.class);
-        config.exposeIdsFor(BloodDonation.class);
         config.exposeIdsFor(DonationApplication.class);
     }
 }

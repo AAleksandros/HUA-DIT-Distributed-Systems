@@ -10,7 +10,9 @@ import java.util.List;
 public interface DonationApplicationRepository extends JpaRepository<DonationApplication, Long> {
     List<DonationApplication> findByCitizenId(Long citizenId);
 
-    DonationApplication findTopByCitizenIdAndStatusOrderByApprovalDateDesc(Long citizenId, DonationApplication.ApplicationStatus status);
+    // Modified to order by processedAt instead of approvalDate
+    DonationApplication findTopByCitizenIdAndStatusOrderByProcessedAtDesc(Long citizenId, DonationApplication.ApplicationStatus status);
+
     @Query("SELECT da FROM DonationApplication da JOIN FETCH da.citizen c")
     List<DonationApplication> findAllWithDetails();
 

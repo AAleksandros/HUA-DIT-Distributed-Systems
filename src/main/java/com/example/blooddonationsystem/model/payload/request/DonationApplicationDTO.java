@@ -5,7 +5,7 @@ public class DonationApplicationDTO {
     private boolean hasNoRecentProcedures;
     private boolean hasNoTravelToRiskAreas;
     private boolean hasNoRiskBehavior;
-    private boolean hasNoHIVOrDrugUse;
+    private boolean hasNoDrugUse;
     private boolean hasAIDS;
     private boolean freeOfInfections;
     private boolean notRecentlyPregnant;
@@ -43,14 +43,6 @@ public class DonationApplicationDTO {
         this.hasNoRiskBehavior = hasNoRiskBehavior;
     }
 
-    public boolean isHasNoHIVOrDrugUse() {
-        return hasNoHIVOrDrugUse;
-    }
-
-    public void setHasNoHIVOrDrugUse(boolean hasNoHIVOrDrugUse) {
-        this.hasNoHIVOrDrugUse = hasNoHIVOrDrugUse;
-    }
-
     public boolean isHasAIDS() {
         return hasAIDS;
     }
@@ -58,7 +50,12 @@ public class DonationApplicationDTO {
     public void setHasAIDS(boolean hasAIDS) {
         this.hasAIDS = hasAIDS;
     }
-
+    public void setHasNoDrugUse(boolean hasNoDrugUse) {
+        this.hasNoDrugUse = hasNoDrugUse;
+    }
+    public boolean isHasNoDrugUse(){
+        return hasNoDrugUse;
+    }
     public boolean isFreeOfInfections() {
         return freeOfInfections;
     }
@@ -83,16 +80,18 @@ public class DonationApplicationDTO {
         this.notBreastfeeding = notBreastfeeding;
     }
 
-public DonationApplicationDTO(boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean hasAIDS, boolean freeOfInfections, boolean notRecentlyPregnant, boolean notBreastfeeding) {
+
+    public DonationApplicationDTO(boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoDrugUse, boolean hasAIDS, boolean freeOfInfections, boolean notRecentlyPregnant, boolean notBreastfeeding) {
         this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
         this.hasNoRecentProcedures = hasNoRecentProcedures;
         this.hasNoTravelToRiskAreas = hasNoTravelToRiskAreas;
         this.hasNoRiskBehavior = hasNoRiskBehavior;
-        this.hasNoHIVOrDrugUse = hasNoHIVOrDrugUse;
+        this.hasNoDrugUse = hasNoDrugUse;
         this.hasAIDS = hasAIDS;
         this.freeOfInfections = freeOfInfections;
         this.notRecentlyPregnant = notRecentlyPregnant;
         this.notBreastfeeding = notBreastfeeding;
+
     }
 
     public DonationApplicationDTO() {
@@ -106,7 +105,7 @@ public DonationApplicationDTO(boolean hasNoTattoosOrPiercings, boolean hasNoRece
                 ", hasNoRecentProcedures=" + hasNoRecentProcedures +
                 ", hasNoTravelToRiskAreas=" + hasNoTravelToRiskAreas +
                 ", hasNoRiskBehavior=" + hasNoRiskBehavior +
-                ", hasNoHIVOrDrugUse=" + hasNoHIVOrDrugUse +
+                ", hasNoHIVOrDrugUse=" + hasNoDrugUse +
                 ", hasAIDS=" + hasAIDS +
                 ", freeOfInfections=" + freeOfInfections +
                 ", notRecentlyPregnant=" + notRecentlyPregnant +

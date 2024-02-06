@@ -16,8 +16,8 @@ public class RestConfiguration implements RepositoryRestConfigurer {
     public void configureRepositoryRestConfiguration(
             RepositoryRestConfiguration config, CorsRegistry cors) {
         config.exposeIdsFor(Citizen.class);
-        config.exposeIdsFor(DonationApplication.class);
         config.exposeIdsFor(Secretary.class);
         config.exposeIdsFor(BloodDonation.class);
+        config.exposeIdsFor(DonationApplication.class);
     }
 }

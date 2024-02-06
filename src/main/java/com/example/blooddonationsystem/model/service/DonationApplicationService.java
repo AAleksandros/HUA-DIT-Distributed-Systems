@@ -76,7 +76,7 @@ public class DonationApplicationService {
         return donationApplicationRepository.save(application);
     }
     public List<DonationApplication> findApplicationsByEmail(String email) {
-        Optional<Citizen> citizen = citizenRepository.findByEmail(email);
+        Optional<Citizen> citizen = citizenRepository.findByEmailIgnoreCase(email);
         return citizen.map(value -> donationApplicationRepository.findByCitizenId(value.getId()))
                 .orElseGet(Collections::emptyList);
     }

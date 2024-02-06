@@ -1,6 +1,8 @@
 package com.example.blooddonationsystem.model.controller;
 
 import com.example.blooddonationsystem.model.config.JwtUtils;
+import com.example.blooddonationsystem.model.dao.CitizenDAOImpl;
+import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.Role;
 import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.payload.request.LoginRequest;
@@ -44,6 +46,8 @@ public class AuthController {
 
     @Autowired
     private JwtUtils jwtUtils;
+    @Autowired
+    private CitizenDAOImpl citizenDAO;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -75,6 +79,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        // Creating user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword()));
@@ -108,7 +113,15 @@ public class AuthController {
         }
 
         user.setRoles(roles);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+
+        // Creating and linking Citizen details to the User
+        Citizen citizen = new Citizen(signUpRequest.getFirstName(), signUpRequest.getLastName(),
+                passwordEncoder.encode(signUpRequest.getPassword()), signUpRequest.getEmail(),
+                signUpRequest.getPhoneNumber(), signUpRequest.getAddress(),
+                signUpRequest.getBloodType(), signUpRequest.getAge());
+        citizen.setUser(savedUser); // Link Citizen to User
+        citizenDAO.saveOrUpdateCitizen(citizen); // Persist Citizen details
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

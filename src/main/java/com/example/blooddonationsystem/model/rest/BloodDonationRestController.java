@@ -50,7 +50,7 @@ public class BloodDonationRestController {
         application.setHasNoRecentProcedures(applicationDTO.isHasNoRecentProcedures());
         application.setHasNoTravelToRiskAreas(applicationDTO.isHasNoTravelToRiskAreas());
         application.setHasNoRiskBehavior(applicationDTO.isHasNoRiskBehavior());
-        application.setHasNoHIVOrDrugUse(applicationDTO.isHasNoHIVOrDrugUse());
+        application.setHasNoDrugUse(applicationDTO.isHasNoDrugUse());
         application.setHasAIDS(applicationDTO.isHasAIDS());
         application.setFreeOfInfections(applicationDTO.isFreeOfInfections());
         application.setNotRecentlyPregnant(applicationDTO.isNotRecentlyPregnant());

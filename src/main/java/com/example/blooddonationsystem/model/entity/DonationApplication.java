@@ -23,8 +23,6 @@ public class DonationApplication {
     private LocalDateTime createdAt;
 
 
-    @Column(name = "approval_date")
-    private LocalDateTime approvalDate;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "processed_by_secretary_id")
@@ -50,13 +48,12 @@ public class DonationApplication {
     private boolean hasNoRiskBehavior;
 
     @NotNull(message = "This field is required")
-    private boolean hasNoHIVOrDrugUse;
-
-    @NotNull(message = "This field is required")
     private boolean isNotRecentlyPregnant;
 
     @NotNull(message = "This field is required")
     private boolean isNotBreastfeeding;
+    @NotNull(message = "This field is required")
+    private boolean hasNoDrugUse;
 
     @NotNull(message = "This field is required")
     private boolean hasAIDS;
@@ -69,21 +66,7 @@ public class DonationApplication {
     public DonationApplication() {
     }
 
-    public DonationApplication(Citizen citizen, ApplicationStatus status, boolean isFreeOfInfections, boolean hasNoTattoosOrPiercings, boolean hasNoRecentProcedures, boolean hasNoTravelToRiskAreas, boolean hasNoRiskBehavior, boolean hasNoHIVOrDrugUse, boolean isNotRecentlyPregnant, boolean isNotBreastfeeding, boolean hasAIDS, String rejectionReason) {
-        this.citizen = citizen;
-        this.status = status;
-        this.isFreeOfInfections = isFreeOfInfections;
-        this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
-        this.hasNoRecentProcedures = hasNoRecentProcedures;
-        this.hasNoTravelToRiskAreas = hasNoTravelToRiskAreas;
-        this.hasNoRiskBehavior = hasNoRiskBehavior;
-        this.hasNoHIVOrDrugUse = hasNoHIVOrDrugUse;
-        this.isNotRecentlyPregnant = isNotRecentlyPregnant;
-        this.isNotBreastfeeding = isNotBreastfeeding;
-        this.hasAIDS = hasAIDS;
-        this.rejectionReason = rejectionReason;
-        this.createdAt = LocalDateTime.now(); // Initialize createdAt to the current time
-    }
+
 
     @PrePersist
     protected void onCreate() {
@@ -121,15 +104,12 @@ public class DonationApplication {
         return createdAt;
     }
 
-
-    public LocalDateTime getApprovalDate() {
-        return approvalDate;
+    public void setHasNoDrugUse(boolean hasNoDrugUse) {
+        this.hasNoDrugUse = hasNoDrugUse;
     }
-
-    public void setApprovalDate(LocalDateTime approvalDate) {
-        this.approvalDate = approvalDate;
+    public boolean isHasNoDrugUse(){
+        return hasNoDrugUse;
     }
-
     public Secretary getProcessedBy() {
         return processedBy;
     }
@@ -186,13 +166,6 @@ public class DonationApplication {
         this.hasNoRiskBehavior = hasNoRiskBehavior;
     }
 
-    public boolean hasNoHIVOrDrugUse() {
-        return hasNoHIVOrDrugUse;
-    }
-
-    public void setHasNoHIVOrDrugUse(boolean hasNoHIVOrDrugUse) {
-        this.hasNoHIVOrDrugUse = hasNoHIVOrDrugUse;
-    }
 
     public boolean isNotRecentlyPregnant() {
         return isNotRecentlyPregnant;

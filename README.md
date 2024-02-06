@@ -8,7 +8,7 @@ The project is composed of two parts: the backend application and the frontend a
 ### 1. Running the backend.
 The application uses a PostgreSQL database contained in Docker. To run the database use the following:
 
-```docker run --name blood_donations -e POSTGRES_PASSWORD=Kondocker123!@# -e POSTGRES_USER=postgres -e POSTGRES_DB=blood_donations -p 5432:5432 -d postgres```
+```docker run --name DS_Blood_Donations -e POSTGRES_PASSWORD=Kondocker123!@# -e POSTGRES_USER=postgres -e POSTGRES_DB=DS_Blood_Donations -p 5432:5432 -d postgres```
 
 **Database connection details:**
 

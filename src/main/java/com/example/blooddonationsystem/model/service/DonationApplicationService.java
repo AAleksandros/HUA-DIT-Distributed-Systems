@@ -8,6 +8,8 @@ import com.example.blooddonationsystem.model.repository.DonationApplicationRepos
 import com.example.blooddonationsystem.model.repository.SecretaryRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -34,13 +36,16 @@ public class DonationApplicationService {
         return donationApplicationRepository.findById(applicationId);
     }
 
-    @Transactional  // Ensure transactional context for this method
-    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status, String secretaryEmail) {
-        DonationApplication application = getApplicationById(applicationId)
+    @Transactional
+    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status) {
+        DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
 
-        Secretary secretary = secretaryRepository.findByEmail(secretaryEmail)
-                .orElseThrow(() -> new RuntimeException("Secretary not found with email: " + secretaryEmail));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = getEmailFromAuthentication(authentication); // Ensure this method gets the full email
+
+        Secretary secretary = secretaryRepository.findByEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Secretary not found with email: " + email));
 
         application.setStatus(status);
         application.setProcessedBy(secretary);
@@ -48,6 +53,19 @@ public class DonationApplicationService {
 
         return donationApplicationRepository.save(application);
     }
+
+    private String getEmailFromAuthentication(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            return userDetails.getEmail(); // This should return the full email address
+        } else {
+            // Fallback or error handling if the principal is not an instance of UserDetailsImpl
+            throw new RuntimeException("Authentication principal does not contain email information.");
+        }
+    }
+
+
+
 
     public List<DonationApplication> findApplicationsByCitizenId(Long citizenId) {
         return donationApplicationRepository.findByCitizenId(citizenId);
@@ -69,12 +87,7 @@ public class DonationApplicationService {
     public List<DonationApplication> findAllApplicationsWithDetails() {
         return donationApplicationRepository.findAllWithDetails();
     }
-    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status) {
-        DonationApplication application = getApplicationById(applicationId)
-                .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
-        application.setStatus(status);
-        return donationApplicationRepository.save(application);
-    }
+
     public List<DonationApplication> findApplicationsByEmail(String email) {
         Optional<Citizen> citizen = citizenRepository.findByEmailIgnoreCase(email);
         return citizen.map(value -> donationApplicationRepository.findByCitizenId(value.getId()))

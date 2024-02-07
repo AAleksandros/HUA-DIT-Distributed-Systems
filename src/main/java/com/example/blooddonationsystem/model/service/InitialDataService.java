@@ -1,8 +1,10 @@
 package com.example.blooddonationsystem.model.service;
 
 import com.example.blooddonationsystem.model.entity.Role;
+import com.example.blooddonationsystem.model.entity.Secretary;
 import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.repository.RoleRepository;
+import com.example.blooddonationsystem.model.repository.SecretaryRepository;
 import com.example.blooddonationsystem.model.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.PostConstruct;
 import java.util.HashSet;
 import java.util.Set;
+
+
 
 @Service
 public class InitialDataService {
@@ -23,6 +27,11 @@ public class InitialDataService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private SecretaryRepository secretaryRepository;
+
+
 
     private void createRoles() {
         String[] roles = {"ROLE_ADMIN", "ROLE_SECRETARY", "ROLE_CITIZEN"};

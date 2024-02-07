@@ -86,3 +86,5 @@ public class BloodDonationRestController {
         return ResponseEntity.ok("Application status updated successfully.");
     }
 }
+
+

@@ -49,6 +49,8 @@ public class AuthController {
     @Autowired
     private CitizenDAOImpl citizenDAO;
 
+
+    // Authenticate user
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -69,6 +71,8 @@ public class AuthController {
                 roles));
     }
 
+
+    // Register user
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -84,33 +88,11 @@ public class AuthController {
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
+        // Assign ROLE_CITIZEN by default
+        Role userRole = roleRepository.findByName("ROLE_CITIZEN")
+                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null || strRoles.isEmpty()) {
-            Role userRole = roleRepository.findByName("ROLE_CITIZEN")
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role.toLowerCase()) {
-                    case "admin":
-                        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-                        break;
-                    case "secretary":
-                        Role modRole = roleRepository.findByName("ROLE_SECRETARY")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName("ROLE_CITIZEN")
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
+        roles.add(userRole);
 
         user.setRoles(roles);
         User savedUser = userRepository.save(user);
@@ -118,7 +100,7 @@ public class AuthController {
         // Creating and linking Citizen details to the User
         Citizen citizen = new Citizen(signUpRequest.getFirstName(), signUpRequest.getLastName(),
                 passwordEncoder.encode(signUpRequest.getPassword()), signUpRequest.getEmail(),
-                signUpRequest.getPhoneNumber(), signUpRequest.getAddress(),
+                signUpRequest.getPhoneNumber(), signUpRequest.getArea(),
                 signUpRequest.getBloodType(), signUpRequest.getAge());
         citizen.setUser(savedUser); // Link Citizen to User
         citizenDAO.saveOrUpdateCitizen(citizen); // Persist Citizen details

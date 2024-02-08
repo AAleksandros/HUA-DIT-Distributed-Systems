@@ -15,7 +15,6 @@ public class SignupRequest {
     @Email
     private String email;
 
-    private Set<String> role;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -31,7 +30,7 @@ public class SignupRequest {
     private String phoneNumber;
 
     @NotBlank
-    private String address;
+    private String area;
 
     @NotBlank
     private String bloodType;
@@ -63,13 +62,6 @@ public class SignupRequest {
         this.password = password;
     }
 
-    public Set<String> getRole() {
-        return this.role;
-    }
-
-    public void setRole(Set<String> role) {
-        this.role = role;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -95,12 +87,12 @@ public class SignupRequest {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getAddress() {
-        return address;
+    public String getArea() {
+        return area;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public String getBloodType() {
@@ -124,12 +116,11 @@ public class SignupRequest {
         return "SignupRequest{" +
                 "username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", role=" + role +
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", address='" + address + '\'' +
+                ", area='" + area + '\'' +
                 ", bloodType='" + bloodType + '\'' +
                 ", age=" + age +
                 '}';

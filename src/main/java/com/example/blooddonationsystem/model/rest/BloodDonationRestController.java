@@ -3,6 +3,7 @@ package com.example.blooddonationsystem.model.rest;
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.payload.request.DonationApplicationDTO;
+import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.service.DonationApplicationService;
 import com.example.blooddonationsystem.model.service.UserDetailsImpl;
@@ -15,10 +16,17 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/bloodDonations")
 public class BloodDonationRestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(BloodDonationRestController.class);
+
 
     @Autowired
     private DonationApplicationService donationApplicationService;
@@ -40,7 +48,7 @@ public class BloodDonationRestController {
             throw new RuntimeException("Authentication principal is not an instance of UserDetailsImpl");
         }
 
-        Citizen citizen = citizenRepository.findByEmailIgnoreCase(email)
+        Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + email));
 
 
@@ -64,13 +72,17 @@ public class BloodDonationRestController {
 
     // Get current citizen's applications
     @GetMapping("/my-applications")
-    public ResponseEntity<List<DonationApplication>> getCitizenApplications() {
+    public ResponseEntity<List<DonationApplicationResponseDTO>> getCitizenApplications() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        Citizen citizen = citizenRepository.findByEmailIgnoreCase(email).orElseThrow(() -> new RuntimeException("Citizen not found"));
-        List<DonationApplication> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
+        String username = authentication.getName(); // Assuming this is now correctly treated as the username.
+
+        Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
+
+        List<DonationApplicationResponseDTO> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
         return ResponseEntity.ok(applications);
     }
+
 
     // View all donation applications (for secretary or admin)
     @GetMapping("/applications")
@@ -81,8 +93,14 @@ public class BloodDonationRestController {
 
     // Update a donation application's status (for secretary or admin)
     @PostMapping("/applications/{applicationId}/status")
-    public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId, @RequestParam DonationApplication.ApplicationStatus status) {
-        donationApplicationService.updateApplicationStatus(applicationId, status);
+    public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId,
+                                                     @RequestParam DonationApplication.ApplicationStatus status,
+                                                     @RequestParam(required = false) String rejectionReason) {
+        // Wrap the rejectionReason in an Optional
+        Optional<String> optionalRejectionReason = Optional.ofNullable(rejectionReason);
+
+        donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason);
+
         return ResponseEntity.ok("Application status updated successfully.");
     }
 }

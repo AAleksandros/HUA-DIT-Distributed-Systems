@@ -3,6 +3,7 @@ package com.example.blooddonationsystem.model.service;
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.entity.Secretary;
+import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import com.example.blooddonationsystem.model.repository.SecretaryRepository;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class DonationApplicationService {
@@ -37,19 +39,26 @@ public class DonationApplicationService {
     }
 
     @Transactional
-    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status) {
+    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status, Optional<String> optionalRejectionReason) {
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = getEmailFromAuthentication(authentication); // Ensure this method gets the full email
+        String email = getEmailFromAuthentication(authentication);
 
-        Secretary secretary = secretaryRepository.findByEmailIgnoreCase(email)
+        Secretary secretary = secretaryRepository.findByUserEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Secretary not found with email: " + email));
 
         application.setStatus(status);
         application.setProcessedBy(secretary);
         application.setProcessedAt(LocalDateTime.now());
+
+        // Use the rejectionReason if present and status is REJECTED
+        if (status == DonationApplication.ApplicationStatus.REJECTED) {
+            application.setRejectionReason(optionalRejectionReason.orElse(null));
+        } else {
+            application.setRejectionReason(null); // Ensure it's cleared if status is not REJECTED
+        }
 
         return donationApplicationRepository.save(application);
     }
@@ -57,19 +66,21 @@ public class DonationApplicationService {
     private String getEmailFromAuthentication(Authentication authentication) {
         if (authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            return userDetails.getEmail(); // This should return the full email address
+            return userDetails.getEmail();
         } else {
-            // Fallback or error handling if the principal is not an instance of UserDetailsImpl
             throw new RuntimeException("Authentication principal does not contain email information.");
         }
     }
 
 
-
-
-    public List<DonationApplication> findApplicationsByCitizenId(Long citizenId) {
-        return donationApplicationRepository.findByCitizenId(citizenId);
+    public List<DonationApplicationResponseDTO> findApplicationsByCitizenId(Long citizenId) {
+        List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
+        return applications.stream()
+                .map(application -> new DonationApplicationResponseDTO(application.getId(), application.getStatus().name()))
+                .collect(Collectors.toList());
     }
+
+
 
     public List<DonationApplication> findAllApplications() {
         return donationApplicationRepository.findAll();
@@ -89,9 +100,26 @@ public class DonationApplicationService {
     }
 
     public List<DonationApplication> findApplicationsByEmail(String email) {
-        Optional<Citizen> citizen = citizenRepository.findByEmailIgnoreCase(email);
+        Optional<Citizen> citizen = citizenRepository.findByUserEmailIgnoreCase(email);
         return citizen.map(value -> donationApplicationRepository.findByCitizenId(value.getId()))
                 .orElseGet(Collections::emptyList);
+    }
+
+    public List<DonationApplicationResponseDTO> findApplicationsByStatus(Optional<DonationApplication.ApplicationStatus> status) {
+        List<DonationApplication> applications;
+        if (status.isPresent()) {
+            applications = donationApplicationRepository.findByStatus(status.get());
+        } else {
+            applications = donationApplicationRepository.findAll();
+        }
+        return applications.stream()
+                .map(this::convertToResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    private DonationApplicationResponseDTO convertToResponseDTO(DonationApplication application) {
+        return new DonationApplicationResponseDTO(application.getId(), application.getStatus().name());
     }
 
     // Additional methods as needed

@@ -36,8 +36,8 @@ public class Citizen {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "area")
+    private String area;
 
     @Column(name = "blood_type")
     private String bloodType;
@@ -59,13 +59,13 @@ public class Citizen {
     public Citizen() {
     }
 
-    public Citizen(String firstName, String lastName, String password, String email, String phoneNumber, String address, String bloodType, Integer age) {
+    public Citizen(String firstName, String lastName, String password, String email, String phoneNumber, String area, String bloodType, Integer age) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.address = address;
+        this.area = area;
         this.bloodType = bloodType;
         this.age = age;
     }
@@ -124,12 +124,12 @@ public class Citizen {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getAddress() {
-        return address;
+    public String getArea() {
+        return area;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setArea(String area) {
+        this.area = area;
     }
 
     public String getBloodType() {
@@ -157,6 +157,8 @@ public class Citizen {
         this.user = user;
     }
 
+
+
     public DonationApplication getDonationApplication() {
         return donationApplication;
     }
@@ -174,7 +176,7 @@ public class Citizen {
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
-                ", address='" + address + '\'' +
+                ", area='" + area + '\'' +
                 ", bloodType='" + bloodType + '\'' +
                 ", age=" + age +
                 '}';

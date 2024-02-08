@@ -17,7 +17,7 @@ public class DonationApplication {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private ApplicationStatus status;
+    private ApplicationStatus status = ApplicationStatus.PENDING;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

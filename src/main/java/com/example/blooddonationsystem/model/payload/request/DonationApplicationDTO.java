@@ -105,7 +105,7 @@ public class DonationApplicationDTO {
                 ", hasNoRecentProcedures=" + hasNoRecentProcedures +
                 ", hasNoTravelToRiskAreas=" + hasNoTravelToRiskAreas +
                 ", hasNoRiskBehavior=" + hasNoRiskBehavior +
-                ", hasNoHIVOrDrugUse=" + hasNoDrugUse +
+                ", hasNoDrugUse=" + hasNoDrugUse +
                 ", hasAIDS=" + hasAIDS +
                 ", freeOfInfections=" + freeOfInfections +
                 ", notRecentlyPregnant=" + notRecentlyPregnant +

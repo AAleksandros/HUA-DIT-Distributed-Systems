@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!-- <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="~{fragments/header :: header}"></head>
 <body>
@@ -7,8 +7,8 @@
   <h2>Blood Donation Eligibility Questionnaire</h2>
     <form th:action="@{/bloodDonations/apply}" th:object="${healthHistory}" method="post">
 
-      <!-- Health Questions -->
-      <div class="question">
+Health Questions -->
+       <!-- <div class="question">
         <p>Are you currently free of cold, flu, sore throat, or any other infection?</p>
         <input type="radio" id="noInfectionYes" name="noInfection" value="yes">
         <label for="noInfectionYes">Yes</label>
@@ -32,8 +32,8 @@
         <label for="noDentalWorkNo">No</label>
       </div>
 
-      <!-- Travel Questions -->
-      <div class="question">
+     Travel Questions -->
+       <!-- <div class="question">
         <p>Have you travelled to areas with mosquito-borne infections recently?</p>
         <input type="radio" id="noTravelYes" name="noTravel" value="yes">
         <label for="noTravelYes">Yes</label>
@@ -41,8 +41,8 @@
         <label for="noTravelNo">No</label>
       </div>
 
-      <!-- Behaviour Questions -->
-      <div class="question">
+     Behaviour Questions -->
+       <!-- <div class="question">
         <p>Have you has 'at risk' sexual activity in the past 12 months?</p>
         <input type="radio" id="noRiskBehaviorYes" name="noRiskBehavior" value="yes">
         <label for="noRiskBehaviorYes">Yes</label>
@@ -57,8 +57,8 @@
         <input type="radio" id="noHIVDrugsNo" name="noHIVDrugs" value="no">
         <label for="noHIVDrugsNo">No</label>
       </div>
-      <!-- Pregnancy and Breastfeeding Questions -->
-      <div class="question">
+ Pregnancy and Breastfeeding Questions -->
+      <!--  <div class="question">
         <p>Have you been pregnant or given birth in the last 9 months?</p>
         <input type="radio" id="notRecentlyPregnantYes" name="notRecentlyPregnant" value="yes">
         <label for="notRecentlyPregnantYes">Yes</label>

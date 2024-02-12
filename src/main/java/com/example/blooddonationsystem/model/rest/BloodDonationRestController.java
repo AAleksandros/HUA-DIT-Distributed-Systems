@@ -34,7 +34,6 @@ public class BloodDonationRestController {
     @Autowired
     private CitizenRepository citizenRepository;
 
-    // Apply for a blood donation
 // Apply for a blood donation
     @PostMapping("/apply")
     public ResponseEntity<?> applyForDonation(@Valid @RequestBody DonationApplicationDTO applicationDTO) {
@@ -43,7 +42,7 @@ public class BloodDonationRestController {
 
         if (authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            email = userDetails.getEmail(); // Use getEmail() to retrieve the full email address
+            email = userDetails.getEmail();
         } else {
             throw new RuntimeException("Authentication principal is not an instance of UserDetailsImpl");
         }
@@ -63,7 +62,6 @@ public class BloodDonationRestController {
         application.setFreeOfInfections(applicationDTO.isFreeOfInfections());
         application.setNotRecentlyPregnant(applicationDTO.isNotRecentlyPregnant());
         application.setNotBreastfeeding(applicationDTO.isNotBreastfeeding());
-        // You may need to add additional fields here based on your DonationApplication entity
 
         donationApplicationService.createApplication(application);
 
@@ -96,7 +94,7 @@ public class BloodDonationRestController {
     public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId,
                                                      @RequestParam DonationApplication.ApplicationStatus status,
                                                      @RequestParam(required = false) String rejectionReason) {
-        // Wrap the rejectionReason in an Optional
+
         Optional<String> optionalRejectionReason = Optional.ofNullable(rejectionReason);
 
         donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason);

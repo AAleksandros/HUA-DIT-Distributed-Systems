@@ -40,7 +40,7 @@ public class InitialDataService {
             roleRepository.findByName(roleName).orElseGet(() -> {
                 Role newRole = new Role(roleName);
                 roleRepository.save(newRole);
-                return null; // Using null to satisfy the orElseGet requirement
+                return null;
             });
         }
     }

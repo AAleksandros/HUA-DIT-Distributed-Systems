@@ -75,7 +75,7 @@ public class DonationApplication {
 
 
 
-    // Getters and setters for all fields
+
     public Long getId() {
         return id;
     }

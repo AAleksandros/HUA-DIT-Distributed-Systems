@@ -88,7 +88,6 @@ public class AuthController {
                 signUpRequest.getEmail(),
                 passwordEncoder.encode(signUpRequest.getPassword()));
 
-        // Assign ROLE_CITIZEN by default
         Role userRole = roleRepository.findByName("ROLE_CITIZEN")
                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
         Set<Role> roles = new HashSet<>();
@@ -97,13 +96,12 @@ public class AuthController {
         user.setRoles(roles);
         User savedUser = userRepository.save(user);
 
-        // Creating and linking Citizen details to the User
         Citizen citizen = new Citizen(signUpRequest.getFirstName(), signUpRequest.getLastName(),
                 passwordEncoder.encode(signUpRequest.getPassword()), signUpRequest.getEmail(),
                 signUpRequest.getPhoneNumber(), signUpRequest.getArea(),
                 signUpRequest.getBloodType(), signUpRequest.getAge());
-        citizen.setUser(savedUser); // Link Citizen to User
-        citizenDAO.saveOrUpdateCitizen(citizen); // Persist Citizen details
+        citizen.setUser(savedUser);
+        citizenDAO.saveOrUpdateCitizen(citizen);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }

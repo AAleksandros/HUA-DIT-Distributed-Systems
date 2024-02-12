@@ -47,7 +47,7 @@ public class Secretary {
         this.email = email;
     }
 
-    // Getters and Setters
+
 
     public Long getId() {
         return id;

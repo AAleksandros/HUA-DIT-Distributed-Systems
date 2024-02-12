@@ -18,9 +18,13 @@ public interface CitizenRepository extends JpaRepository<Citizen, Long> { // Ens
     @Query("SELECT c FROM Citizen c WHERE LOWER(c.user.username) = LOWER(:username)")
     Optional<Citizen> findByUsernameIgnoreCase(@Param("username") String username);
 
-    // Custom query to fetch all citizens with their donation applications
+
     @Query("SELECT c FROM Citizen c LEFT JOIN FETCH c.donationApplication")
     List<Citizen> findAllWithDonationApplication();
+
+    @Query("SELECT c FROM Citizen c LEFT JOIN FETCH c.donationApplication da WHERE c.id = :citizenId")
+    Optional<Citizen> findByIdWithDonationApplication(@Param("citizenId") Long citizenId);
+
 
 
 }

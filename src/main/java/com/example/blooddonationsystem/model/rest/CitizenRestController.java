@@ -42,8 +42,11 @@ package com.example.blooddonationsystem.model.rest;
 
 import com.example.blooddonationsystem.model.dao.CitizenDAO;
 import com.example.blooddonationsystem.model.entity.Citizen;
+import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.payload.request.CitizenUpdate;
+import com.example.blooddonationsystem.model.payload.response.CitizenDetailsResponse;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
+import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -68,11 +71,6 @@ public class CitizenRestController {
     @Autowired
     private CitizenDAO citizenDao;
 
-    @GetMapping("")
-    public List<Citizen> getCitizens(){
-        return citizenDao.getAllCitizens();
-    }
-
     @PostMapping("")
     public Citizen saveOrUpdateCitizen(@RequestBody Citizen citizen){
         return citizenDao.saveOrUpdateCitizen(citizen);
@@ -81,7 +79,7 @@ public class CitizenRestController {
     @PutMapping("/update")
     public ResponseEntity<?> updateCitizenInfo(@RequestBody CitizenUpdate citizenUpdateDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Assuming this retrieves the username.
+        String username = authentication.getName();
 
         Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
@@ -104,6 +102,17 @@ public class CitizenRestController {
             return ResponseEntity.badRequest().body("Update failed due to invalid data.");
         }
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getDetails/{citizenId}")
+    public ResponseEntity<?> getCitizenDetails(@PathVariable Long citizenId) {
+        Optional<Citizen> citizenOpt = citizenRepository.findByIdWithDonationApplication(citizenId);
+        if (!citizenOpt.isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        Citizen citizen = citizenOpt.get();
+        // Optionally, convert to a DTO to avoid exposing sensitive information and to control the JSON structure
+        return ResponseEntity.ok(citizen);
     }
 
 }

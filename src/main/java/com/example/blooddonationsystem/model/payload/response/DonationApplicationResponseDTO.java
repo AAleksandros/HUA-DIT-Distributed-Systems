@@ -6,10 +6,10 @@ import java.time.format.DateTimeFormatter;
 public class DonationApplicationResponseDTO {
     private Long id;
     private String status;
-    private String createdAt; // Use String to store the formatted date
+    private String createdAt;
     private Long citizenId;
 
-    // DateTimeFormatter for formatting the LocalDateTime
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
     public DonationApplicationResponseDTO(Long id, String status, LocalDateTime createdAt, Long citizenId) {
@@ -19,7 +19,7 @@ public class DonationApplicationResponseDTO {
         this.citizenId = citizenId;
     }
 
-    // Getters and setters
+
 
     public Long getId() {
         return id;
@@ -53,7 +53,7 @@ public class DonationApplicationResponseDTO {
         this.citizenId = citizenId;
     }
 
-    // Default constructor if needed
+
     public DonationApplicationResponseDTO() {
     }
 }

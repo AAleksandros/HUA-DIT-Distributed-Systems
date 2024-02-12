@@ -33,5 +33,4 @@ public class SecretaryDAOImpl implements SecretaryDAO {
         secretaryRepository.deleteById(id);
     }
 
-    // Implement any other operations as needed
 }

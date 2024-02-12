@@ -14,5 +14,4 @@ public interface SecretaryDAO {
 
     void deleteSecretary(Long id);
 
-    // Any other operations you might need
 }

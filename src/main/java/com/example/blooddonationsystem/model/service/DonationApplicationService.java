@@ -53,11 +53,11 @@ public class DonationApplicationService {
         application.setProcessedBy(secretary);
         application.setProcessedAt(LocalDateTime.now());
 
-        // Use the rejectionReason if present and status is REJECTED
+
         if (status == DonationApplication.ApplicationStatus.REJECTED) {
             application.setRejectionReason(optionalRejectionReason.orElse(null));
         } else {
-            application.setRejectionReason(null); // Ensure it's cleared if status is not REJECTED
+            application.setRejectionReason(null);
         }
 
         return donationApplicationRepository.save(application);
@@ -124,5 +124,5 @@ public class DonationApplicationService {
                 application.getCitizen().getId());
     }
 
-    // Additional methods as needed
+
 }

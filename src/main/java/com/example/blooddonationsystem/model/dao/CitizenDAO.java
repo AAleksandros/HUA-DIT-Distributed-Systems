@@ -14,5 +14,4 @@ public interface CitizenDAO {
 
     void deleteCitizen(Long id);
 
-    // Any other operations you need
 }

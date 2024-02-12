@@ -84,7 +84,6 @@ public class CitizenRestController {
         Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
 
-        // Check each field for null before updating.
         Optional.ofNullable(citizenUpdateDTO.getFirstName()).ifPresent(citizen::setFirstName);
         Optional.ofNullable(citizenUpdateDTO.getLastName()).ifPresent(citizen::setLastName);
         if (citizenUpdateDTO.getPassword() != null && !citizenUpdateDTO.getPassword().trim().isEmpty()) {
@@ -104,15 +103,6 @@ public class CitizenRestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getDetails/{citizenId}")
-    public ResponseEntity<?> getCitizenDetails(@PathVariable Long citizenId) {
-        Optional<Citizen> citizenOpt = citizenRepository.findByIdWithDonationApplication(citizenId);
-        if (!citizenOpt.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        Citizen citizen = citizenOpt.get();
-        // Optionally, convert to a DTO to avoid exposing sensitive information and to control the JSON structure
-        return ResponseEntity.ok(citizen);
-    }
+
 
 }

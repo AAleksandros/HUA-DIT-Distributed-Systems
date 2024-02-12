@@ -10,11 +10,9 @@ public class CitizenDetailsResponse {
     private Integer age;
     private DonationApplicationDetails donationDetails;
 
-    // Constructor
     public CitizenDetailsResponse() {
     }
 
-    // Getters and Setters for CitizenDetailsResponse
     public Long getId() {
         return id;
     }
@@ -80,11 +78,9 @@ public class CitizenDetailsResponse {
         private boolean hasAIDS;
         private String rejectionReason;
 
-        // Constructor
         public DonationApplicationDetails() {
         }
 
-        // Getters and Setters for DonationApplicationDetails
 
         public Long getId() {
             return id;

@@ -62,6 +62,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/citizens/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                        .requestMatchers("/api/secretary/**").hasRole("SECRETARY")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));

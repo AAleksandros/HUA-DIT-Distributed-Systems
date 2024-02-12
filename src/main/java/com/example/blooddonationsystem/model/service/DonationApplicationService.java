@@ -76,7 +76,8 @@ public class DonationApplicationService {
     public List<DonationApplicationResponseDTO> findApplicationsByCitizenId(Long citizenId) {
         List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
         return applications.stream()
-                .map(application -> new DonationApplicationResponseDTO(application.getId(), application.getStatus().name()))
+                .map(application -> new DonationApplicationResponseDTO(application.getId(), application.getStatus().name(),application.getCreatedAt(),
+                        application.getCitizen().getId()))
                 .collect(Collectors.toList());
     }
 
@@ -119,7 +120,8 @@ public class DonationApplicationService {
 
 
     private DonationApplicationResponseDTO convertToResponseDTO(DonationApplication application) {
-        return new DonationApplicationResponseDTO(application.getId(), application.getStatus().name());
+        return new DonationApplicationResponseDTO(application.getId(), application.getStatus().name(),application.getCreatedAt(),
+                application.getCitizen().getId());
     }
 
     // Additional methods as needed

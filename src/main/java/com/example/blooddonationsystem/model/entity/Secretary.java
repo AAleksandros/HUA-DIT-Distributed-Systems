@@ -10,8 +10,9 @@ import jakarta.annotation.PostConstruct;
 public class Secretary {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Ensure this is correctly set
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @NotBlank
     @Size(max = 50)

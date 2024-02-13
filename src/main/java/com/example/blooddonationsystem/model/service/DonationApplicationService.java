@@ -1,20 +1,21 @@
 package com.example.blooddonationsystem.model.service;
 
-import com.example.blooddonationsystem.model.entity.Citizen;
+
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.entity.Secretary;
 import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
-import com.example.blooddonationsystem.model.repository.CitizenRepository;
+
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import com.example.blooddonationsystem.model.repository.SecretaryRepository;
+
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.stereotype.Service;
 
+
 import java.time.LocalDateTime;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,33 +27,26 @@ public class DonationApplicationService {
     private DonationApplicationRepository donationApplicationRepository;
 
     @Autowired
-    private CitizenRepository citizenRepository;
-
-    @Autowired
     private SecretaryRepository secretaryRepository;
     public DonationApplication createApplication(DonationApplication application) {
         return donationApplicationRepository.save(application);
     }
 
-    public Optional<DonationApplication> getApplicationById(Long applicationId) {
-        return donationApplicationRepository.findById(applicationId);
-    }
-
+    // Update the status of the application
     @Transactional
-    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status, Optional<String> optionalRejectionReason) {
+    public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status, Optional<String> optionalRejectionReason, String secretaryEmail) {
         DonationApplication application = donationApplicationRepository.findById(applicationId)
                 .orElseThrow(() -> new RuntimeException("Application not found with id: " + applicationId));
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = getEmailFromAuthentication(authentication);
+        // Find Secretary by email
+        Secretary secretary = secretaryRepository.findByUserEmailIgnoreCase(secretaryEmail)
+                .orElseThrow(() -> new RuntimeException("Secretary not found with email: " + secretaryEmail));
 
-        Secretary secretary = secretaryRepository.findByUserEmailIgnoreCase(email)
-                .orElseThrow(() -> new RuntimeException("Secretary not found with email: " + email));
+        String username = secretary.getUser().getUsername();
 
         application.setStatus(status);
         application.setProcessedBy(secretary);
         application.setProcessedAt(LocalDateTime.now());
-
 
         if (status == DonationApplication.ApplicationStatus.REJECTED) {
             application.setRejectionReason(optionalRejectionReason.orElse(null));
@@ -60,19 +54,13 @@ public class DonationApplicationService {
             application.setRejectionReason(null);
         }
 
+        // Log the processing
+        System.out.println("Processing by secretary with username: " + username);
+
         return donationApplicationRepository.save(application);
     }
 
-    private String getEmailFromAuthentication(Authentication authentication) {
-        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
-            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            return userDetails.getEmail();
-        } else {
-            throw new RuntimeException("Authentication principal does not contain email information.");
-        }
-    }
-
-
+    // Get all applications by citizen id
     public List<DonationApplicationResponseDTO> findApplicationsByCitizenId(Long citizenId) {
         List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
         return applications.stream()
@@ -82,30 +70,12 @@ public class DonationApplicationService {
     }
 
 
-
+    // Get all applications
     public List<DonationApplication> findAllApplications() {
         return donationApplicationRepository.findAll();
     }
 
-    public void deleteApplication(Long applicationId) {
-        donationApplicationRepository.deleteById(applicationId);
-    }
-    public boolean canCitizenApply(Long citizenId) {
-        List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
-        return applications.stream().noneMatch(app ->
-                app.getStatus() == DonationApplication.ApplicationStatus.PENDING ||
-                        app.getStatus() == DonationApplication.ApplicationStatus.APPROVED);
-    }
-    public List<DonationApplication> findAllApplicationsWithDetails() {
-        return donationApplicationRepository.findAllWithDetails();
-    }
-
-    public List<DonationApplication> findApplicationsByEmail(String email) {
-        Optional<Citizen> citizen = citizenRepository.findByUserEmailIgnoreCase(email);
-        return citizen.map(value -> donationApplicationRepository.findByCitizenId(value.getId()))
-                .orElseGet(Collections::emptyList);
-    }
-
+    // Get all applications by status
     public List<DonationApplicationResponseDTO> findApplicationsByStatus(Optional<DonationApplication.ApplicationStatus> status) {
         List<DonationApplication> applications;
         if (status.isPresent()) {
@@ -118,7 +88,7 @@ public class DonationApplicationService {
                 .collect(Collectors.toList());
     }
 
-
+    // Convert to response DTO
     private DonationApplicationResponseDTO convertToResponseDTO(DonationApplication application) {
         return new DonationApplicationResponseDTO(application.getId(), application.getStatus().name(),application.getCreatedAt(),
                 application.getCitizen().getId());

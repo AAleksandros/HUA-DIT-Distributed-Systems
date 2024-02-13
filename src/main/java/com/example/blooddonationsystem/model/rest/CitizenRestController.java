@@ -68,14 +68,6 @@ public class CitizenRestController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private CitizenDAO citizenDao;
-
-    @PostMapping("")
-    public Citizen saveOrUpdateCitizen(@RequestBody Citizen citizen){
-        return citizenDao.saveOrUpdateCitizen(citizen);
-    }
-
     @PutMapping("/update")
     public ResponseEntity<?> updateCitizenInfo(@RequestBody CitizenUpdate citizenUpdateDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -102,7 +94,4 @@ public class CitizenRestController {
         }
         return ResponseEntity.ok().build();
     }
-
-
-
 }

@@ -38,7 +38,7 @@ public class BloodDonationRestController {
     @Autowired
     private CitizenRepository citizenRepository;
 
-// Apply for a blood donation
+    // Apply for a blood donation
     @PostMapping("/apply")
     public ResponseEntity<?> applyForDonation(@Valid @RequestBody DonationApplicationDTO applicationDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -76,21 +76,12 @@ public class BloodDonationRestController {
     @GetMapping("/my-applications")
     public ResponseEntity<List<DonationApplicationResponseDTO>> getCitizenApplications() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName(); // Assuming this is now correctly treated as the username.
+        String username = authentication.getName();
 
         Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
                 .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
 
         List<DonationApplicationResponseDTO> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
-        return ResponseEntity.ok(applications);
-    }
-
-
-    // View all donation applications
-    @Secured("ROLE_SECRETARY")
-    @GetMapping("/applications")
-    public ResponseEntity<List<DonationApplication>> getAllApplications() {
-        List<DonationApplication> applications = donationApplicationService.findAllApplications();
         return ResponseEntity.ok(applications);
     }
 
@@ -101,11 +92,19 @@ public class BloodDonationRestController {
                                                      @RequestParam DonationApplication.ApplicationStatus status,
                                                      @RequestParam(required = false) String rejectionReason) {
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String secretaryEmail = "";
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            secretaryEmail = userDetails.getEmail();
+        }
+
         Optional<String> optionalRejectionReason = Optional.ofNullable(rejectionReason);
 
-        DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason);
+        DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason, secretaryEmail);
 
-       String citizenEmail = updatedApplication.getCitizen().getEmail();
+        String citizenEmail = updatedApplication.getCitizen().getEmail();
+        String area = updatedApplication.getCitizen().getArea();
 
         // Prepare the email content based on the status
         String subject = "Application Status Update";
@@ -113,7 +112,7 @@ public class BloodDonationRestController {
 
         if (status == DonationApplication.ApplicationStatus.APPROVED) {
             content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
-                    "Your application has been approved.\n\n" +
+                    "Your application has been approved. Please visit our blood donation center located at " + area + " for further instructions.\n\n" +
                     "Best regards,\nHUA Blood Donation Team";
         } else if (status == DonationApplication.ApplicationStatus.REJECTED) {
             content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
@@ -129,5 +128,3 @@ public class BloodDonationRestController {
         return ResponseEntity.ok("Application status updated successfully.");
     }
 }
-
-

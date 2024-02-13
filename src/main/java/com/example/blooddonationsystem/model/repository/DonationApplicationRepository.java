@@ -9,16 +9,5 @@ import java.util.List;
 @Hidden
 public interface DonationApplicationRepository extends JpaRepository<DonationApplication, Long> {
     List<DonationApplication> findByCitizenId(Long citizenId);
-
-
-    DonationApplication findTopByCitizenIdAndStatusOrderByProcessedAtDesc(Long citizenId, DonationApplication.ApplicationStatus status);
-
-    @Query("SELECT da FROM DonationApplication da JOIN FETCH da.citizen c")
-    List<DonationApplication> findAllWithDetails();
-
-    @Query("SELECT da FROM DonationApplication da WHERE da.citizen.id = :citizenId AND da.isFreeOfInfections = true")
-    List<DonationApplication> findByCitizenIdAndHealthCriteria(Long citizenId);
-
     List<DonationApplication> findByStatus(DonationApplication.ApplicationStatus status);
-
 }

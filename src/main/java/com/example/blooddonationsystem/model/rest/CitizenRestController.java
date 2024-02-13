@@ -45,6 +45,7 @@ import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.payload.request.CitizenUpdate;
 import com.example.blooddonationsystem.model.payload.response.CitizenDetailsResponse;
+import com.example.blooddonationsystem.model.payload.response.CitizenMyDetails;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,5 +94,34 @@ public class CitizenRestController {
             return ResponseEntity.badRequest().body("Update failed due to invalid data.");
         }
         return ResponseEntity.ok().build();
+    }
+
+    // Citizens view details of their own profile
+    @GetMapping("/get-myDetails")
+    public ResponseEntity<CitizenMyDetails> getMyDetails() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
+                .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
+
+        CitizenMyDetails response = convertToCitizenMyDetails(citizen);
+
+        return ResponseEntity.ok(response);
+    }
+
+    private CitizenMyDetails convertToCitizenMyDetails(Citizen citizen) {
+
+        CitizenMyDetails response = new CitizenMyDetails();
+        response.setId(citizen.getId());
+        response.setFirstName(citizen.getFirstName());
+        response.setLastName(citizen.getLastName());
+        response.setEmail(citizen.getEmail());
+        response.setAge(citizen.getAge());
+        response.setArea(citizen.getArea());
+        response.setBloodType(citizen.getBloodType());
+        response.setPhoneNumber(citizen.getPhoneNumber());
+
+        return response;
     }
 }

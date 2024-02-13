@@ -9,6 +9,7 @@ import com.example.blooddonationsystem.model.service.DonationApplicationService;
 import com.example.blooddonationsystem.model.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -86,6 +87,7 @@ public class BloodDonationRestController {
 
 
     // View all donation applications
+    @Secured("ROLE_SECRETARY")
     @GetMapping("/applications")
     public ResponseEntity<List<DonationApplication>> getAllApplications() {
         List<DonationApplication> applications = donationApplicationService.findAllApplications();
@@ -93,6 +95,7 @@ public class BloodDonationRestController {
     }
 
     // Update a donation application's status
+    @Secured("ROLE_SECRETARY")
     @PostMapping("/applications/{applicationId}/status")
     public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId,
                                                      @RequestParam DonationApplication.ApplicationStatus status,

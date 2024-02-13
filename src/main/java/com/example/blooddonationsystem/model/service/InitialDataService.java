@@ -28,11 +28,7 @@ public class InitialDataService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private SecretaryRepository secretaryRepository;
-
-
-
+    // Create roles
     private void createRoles() {
         String[] roles = {"ROLE_ADMIN", "ROLE_SECRETARY", "ROLE_CITIZEN"};
 
@@ -45,6 +41,7 @@ public class InitialDataService {
         }
     }
 
+    // Create initial users
     private void createInitialUsers() {
         // Creating an admin user
         userRepository.findByUsername("admin").orElseGet(() -> {

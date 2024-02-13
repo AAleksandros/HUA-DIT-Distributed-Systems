@@ -90,6 +90,8 @@ public class UserDetailsImpl implements UserDetails {
         return true;
     }
 
+
+    // This method is used to compare the user id
     @Override
     public boolean equals(Object o) {
         if (this == o)

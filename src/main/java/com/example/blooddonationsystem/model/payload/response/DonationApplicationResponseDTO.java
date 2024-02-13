@@ -53,7 +53,4 @@ public class DonationApplicationResponseDTO {
         this.citizenId = citizenId;
     }
 
-
-    public DonationApplicationResponseDTO() {
-    }
 }

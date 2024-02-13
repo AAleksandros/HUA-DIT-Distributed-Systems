@@ -11,6 +11,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender emailSender;
 
+    // Email sending method
     public void sendSimpleMessage(String to, String subject, String text) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("placeholder");

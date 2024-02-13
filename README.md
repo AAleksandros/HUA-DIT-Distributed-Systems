@@ -21,5 +21,8 @@ The application uses a PostgreSQL database contained in Docker. To run the datab
 ### 2. Running application:
 Simply clone and open the project in your favourite IDE (preferably Intellij). Please, make sure to wait for all dependencies to be downloaded first. Finally, run the application server in the IDE.
 
+### 3. Email Service
+You can configure the sender email address and the App Password required by GMAIL in application.properties such as spring.mail.username=placeholder and spring.mail.password=placeholder (replace placeholder with actual values).
+
 
 

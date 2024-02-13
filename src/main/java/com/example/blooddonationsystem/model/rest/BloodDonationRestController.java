@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import com.example.blooddonationsystem.model.service.EmailService;
 
 import jakarta.validation.Valid;
 import java.util.List;
@@ -27,6 +28,8 @@ public class BloodDonationRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(BloodDonationRestController.class);
 
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private DonationApplicationService donationApplicationService;
@@ -82,14 +85,14 @@ public class BloodDonationRestController {
     }
 
 
-    // View all donation applications (for secretary or admin)
+    // View all donation applications
     @GetMapping("/applications")
     public ResponseEntity<List<DonationApplication>> getAllApplications() {
         List<DonationApplication> applications = donationApplicationService.findAllApplications();
         return ResponseEntity.ok(applications);
     }
 
-    // Update a donation application's status (for secretary or admin)
+    // Update a donation application's status
     @PostMapping("/applications/{applicationId}/status")
     public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId,
                                                      @RequestParam DonationApplication.ApplicationStatus status,
@@ -97,7 +100,28 @@ public class BloodDonationRestController {
 
         Optional<String> optionalRejectionReason = Optional.ofNullable(rejectionReason);
 
-        donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason);
+        DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason);
+
+       String citizenEmail = updatedApplication.getCitizen().getEmail();
+
+        // Prepare the email content based on the status
+        String subject = "Application Status Update";
+        String content;
+
+        if (status == DonationApplication.ApplicationStatus.APPROVED) {
+            content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
+                    "Your application has been approved.\n\n" +
+                    "Best regards,\nHUA Blood Donation Team";
+        } else if (status == DonationApplication.ApplicationStatus.REJECTED) {
+            content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
+                    "Unfortunately, your application has been rejected.\n" +
+                    "Reason: " + optionalRejectionReason.orElse("Not specified") + "\n\n" +
+                    "Best regards,\nHUA Blood Donation Team";
+        } else {
+            content = "Your application status has been updated to " + status + ".";
+        }
+
+        emailService.sendSimpleMessage(citizenEmail, subject, content);
 
         return ResponseEntity.ok("Application status updated successfully.");
     }

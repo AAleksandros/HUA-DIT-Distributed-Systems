@@ -4,10 +4,12 @@ import com.example.blooddonationsystem.model.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/email")
 public class EmailTestController {
 
     @Autowired
@@ -15,7 +17,7 @@ public class EmailTestController {
 
     @GetMapping("/send-test-email")
     public String sendTestEmail() {
-        String recipient = "it218122@hua.gr";
+        String recipient = "test@email.com";
         String subject = "Test Email";
         String content = "This is a test email sent from Spring Boot application.";
 

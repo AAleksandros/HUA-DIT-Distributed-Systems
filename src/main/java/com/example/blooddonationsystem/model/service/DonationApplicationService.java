@@ -32,6 +32,10 @@ public class DonationApplicationService {
         return donationApplicationRepository.save(application);
     }
 
+    public List<DonationApplication> findApprovedApplicationsBefore(LocalDateTime date) {
+        return donationApplicationRepository.findApprovedApplicationsBefore(date);
+    }
+
     // Update the status of the application
     @Transactional
     public DonationApplication updateApplicationStatus(Long applicationId, DonationApplication.ApplicationStatus status, Optional<String> optionalRejectionReason, String secretaryEmail) {

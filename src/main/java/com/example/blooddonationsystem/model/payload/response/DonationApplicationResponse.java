@@ -19,8 +19,6 @@ public class DonationApplicationResponse {
         this.citizenId = citizenId;
     }
 
-
-
     public Long getId() {
         return id;
     }

@@ -8,8 +8,8 @@ public class DonationApplication {
     private boolean hasDrugUse;
     private boolean hasAIDS;
     private boolean freeOfInfections;
-    private boolean RecentlyPregnant;
-    private boolean Breastfeeding;
+    private boolean recentlyPregnant;
+    private boolean breastfeeding;
 
     public boolean isHasTattoosOrPiercings() {
         return hasTattoosOrPiercings;
@@ -65,19 +65,19 @@ public class DonationApplication {
     }
 
     public boolean isRecentlyPregnant() {
-        return RecentlyPregnant;
+        return recentlyPregnant;
     }
 
     public void setRecentlyPregnant(boolean recentlyPregnant) {
-        this.RecentlyPregnant = recentlyPregnant;
+        this.recentlyPregnant = recentlyPregnant;
     }
 
     public boolean isBreastfeeding() {
-        return Breastfeeding;
+        return breastfeeding;
     }
 
     public void setBreastfeeding(boolean breastfeeding) {
-        this.Breastfeeding = breastfeeding;
+        this.breastfeeding = breastfeeding;
     }
 
 
@@ -89,8 +89,8 @@ public class DonationApplication {
         this.hasDrugUse = hasDrugUse;
         this.hasAIDS = hasAIDS;
         this.freeOfInfections = freeOfInfections;
-        this.RecentlyPregnant = RecentlyPregnant;
-        this.Breastfeeding = Breastfeeding;
+        this.recentlyPregnant = RecentlyPregnant;
+        this.breastfeeding = Breastfeeding;
 
     }
 
@@ -98,18 +98,17 @@ public class DonationApplication {
     }
 
     @Override
-
     public String toString() {
         return "DonationApplicationDTO{" +
-                "hasNoTattoosOrPiercings=" + hasTattoosOrPiercings +
-                ", hasNoRecentProcedures=" + hasRecentProcedures +
-                ", hasNoTravelToRiskAreas=" + hasTravelToRiskAreas +
-                ", hasNoRiskBehavior=" + hasRiskBehavior +
-                ", hasNoDrugUse=" + hasDrugUse +
+                "hasTattoosOrPiercings=" + hasTattoosOrPiercings +
+                ", hasRecentProcedures=" + hasRecentProcedures +
+                ", hasTravelToRiskAreas=" + hasTravelToRiskAreas +
+                ", hasRiskBehavior=" + hasRiskBehavior +
+                ", hasDrugUse=" + hasDrugUse +
                 ", hasAIDS=" + hasAIDS +
                 ", freeOfInfections=" + freeOfInfections +
-                ", notRecentlyPregnant=" + RecentlyPregnant +
-                ", notBreastfeeding=" + Breastfeeding +
+                ", recentlyPregnant=" + recentlyPregnant +
+                ", breastfeeding=" + breastfeeding +
                 '}';
     }
 

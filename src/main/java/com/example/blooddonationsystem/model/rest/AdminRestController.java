@@ -7,6 +7,7 @@ import com.example.blooddonationsystem.model.payload.response.MessageResponse;
 import com.example.blooddonationsystem.model.payload.response.UserDetailsResponse;
 import com.example.blooddonationsystem.model.repository.RoleRepository;
 import com.example.blooddonationsystem.model.repository.UserRepository;
+import com.example.blooddonationsystem.model.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/admin")
-public class AdminController {
+public class AdminRestController {
 
     @Autowired
     private UserRepository userRepository;
@@ -29,6 +30,9 @@ public class AdminController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserDetailsServiceImpl userDetailsServiceImpl;
 
     // Add a new user by admin
     @PostMapping("/users/add")
@@ -59,9 +63,8 @@ public class AdminController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Error: User not found."));
 
-        user.setUsername(userRequest.getUsername());
+        // Consider if updating the username is necessary
         user.setEmail(userRequest.getEmail());
-
         if (userRequest.getPassword() != null && !userRequest.getPassword().isEmpty()) {
             user.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         }
@@ -74,10 +77,11 @@ public class AdminController {
     }
 
 
+
     // Delete a user by admin
     @DeleteMapping("/users/delete/{userId}")
     public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
-        userRepository.findById(userId).ifPresent(user -> userRepository.delete(user));
+        userDetailsServiceImpl.deleteUserAndAssociations(userId);
         return ResponseEntity.ok(new MessageResponse("User deleted successfully."));
     }
 

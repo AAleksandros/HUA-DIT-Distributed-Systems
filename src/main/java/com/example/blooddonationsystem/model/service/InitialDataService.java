@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -28,6 +29,9 @@ public class InitialDataService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private SecretaryRepository secretaryRepository;
+
     // Create roles
     private void createRoles() {
         String[] roles = {"ROLE_ADMIN", "ROLE_SECRETARY", "ROLE_CITIZEN"};
@@ -43,25 +47,32 @@ public class InitialDataService {
 
     // Create initial users
     private void createInitialUsers() {
-        // Creating an admin user
-        userRepository.findByUsername("admin").orElseGet(() -> {
+        // Check and create an admin user if not exists
+        Optional<User> adminUserOpt = userRepository.findByEmail("admin@example.com");
+        if (adminUserOpt.isEmpty()) {
             User admin = new User("admin", "admin@example.com", passwordEncoder.encode("adminpass"));
             Set<Role> adminRoles = new HashSet<>();
             adminRoles.add(roleRepository.findByName("ROLE_ADMIN").orElseThrow());
             admin.setRoles(adminRoles);
             userRepository.save(admin);
-            return null;
-        });
+        }
 
-        // Creating a secretary user
-        userRepository.findByUsername("secretary").orElseGet(() -> {
-            User secretary = new User("secretary", "secretary@example.com", passwordEncoder.encode("secretpass"));
+        // Check and create a secretary user if not exists
+        Optional<User> secretaryUserOpt = userRepository.findByEmail("secretary@example.com");
+        if (secretaryUserOpt.isEmpty()) {
+            User secretaryUser = new User("secretary", "secretary@example.com", passwordEncoder.encode("secretpass"));
             Set<Role> secretaryRoles = new HashSet<>();
             secretaryRoles.add(roleRepository.findByName("ROLE_SECRETARY").orElseThrow());
-            secretary.setRoles(secretaryRoles);
-            userRepository.save(secretary);
-            return null;
-        });
+            secretaryUser.setRoles(secretaryRoles);
+            secretaryUser = userRepository.save(secretaryUser); // Save to get the generated ID
+
+            // Create and link the Secretary entity
+            Secretary secretaryDetails = new Secretary();
+            secretaryDetails.setFirstName("Maria");
+            secretaryDetails.setLastName("Papadopoulou");
+            secretaryDetails.setUser(secretaryUser); // Link the User entity
+            secretaryRepository.save(secretaryDetails);
+        }
     }
 
     @PostConstruct

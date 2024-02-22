@@ -56,7 +56,7 @@ public class SecretaryRestController {
         response.setId(citizen.getId());
         response.setFirstName(citizen.getFirstName());
         response.setLastName(citizen.getLastName());
-        response.setEmail(citizen.getEmail());
+        response.setEmail(citizen.getUser().getEmail());
         response.setAge(citizen.getAge());
 
         DonationApplication donationApplication = citizen.getDonationApplication();

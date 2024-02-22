@@ -2,9 +2,11 @@ package com.example.blooddonationsystem.model.rest;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
+import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.payload.request.DonationApplicationDTO;
 import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
+import com.example.blooddonationsystem.model.repository.UserRepository;
 import com.example.blooddonationsystem.model.service.DonationApplicationService;
 import com.example.blooddonationsystem.model.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ import org.slf4j.LoggerFactory;
 public class BloodDonationRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(BloodDonationRestController.class);
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private EmailService emailService;
@@ -74,16 +79,24 @@ public class BloodDonationRestController {
 
     // Get current citizen's applications
     @GetMapping("/my-applications")
-    public ResponseEntity<List<DonationApplicationResponseDTO>> getCitizenApplications() {
+    public ResponseEntity<List<DonationApplicationResponseDTO>> getMyApplication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        String email;
 
-        Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            email = userDetails.getEmail(); // Access the email directly instead of using getUsername()
+        } else {
+            throw new RuntimeException("Authentication principal does not contain the expected details.");
+        }
+
+        Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + email));
 
         List<DonationApplicationResponseDTO> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
         return ResponseEntity.ok(applications);
     }
+
 
     // Update a donation application's status
     @Secured("ROLE_SECRETARY")
@@ -103,7 +116,7 @@ public class BloodDonationRestController {
 
         DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason, secretaryEmail);
 
-        String citizenEmail = updatedApplication.getCitizen().getEmail();
+        String citizenEmail = updatedApplication.getCitizen().getUser().getEmail();
         String area = updatedApplication.getCitizen().getArea();
 
         // Prepare the email content based on the status

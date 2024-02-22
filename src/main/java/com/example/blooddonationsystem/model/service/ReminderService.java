@@ -29,7 +29,7 @@ public class ReminderService {
         for (DonationApplication application : applications) {
             // Construct and send reminder email
             String area = application.getCitizen().getArea();
-            String email = application.getCitizen().getEmail();
+            String email = application.getCitizen().getUser().getEmail();
             String subject = "Blood Donation Reminder";
             String content = "Dear " + application.getCitizen().getFirstName() + ",\n\n" +
                     "It's been 60 days since your last donation. You're eligible to donate blood again. Please visit " + area + " to proceed with the donation, whenever you are ready.\n\n" +

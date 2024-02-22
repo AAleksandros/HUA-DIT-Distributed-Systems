@@ -1,10 +1,9 @@
 package com.example.blooddonationsystem.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import jakarta.annotation.PostConstruct;
+
 @Entity
 @Table(name = "secretary")
 public class Secretary {
@@ -24,15 +23,6 @@ public class Secretary {
     @Column(name = "last_name")
     private String lastName;
 
-    @NotBlank
-    @Size(max = 120)
-    private String password;
-
-    @NotBlank
-    @Size(max = 50)
-    @Email
-    private String email;
-
     @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
@@ -44,8 +34,6 @@ public class Secretary {
     public Secretary(String firstName, String lastName, String password, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
-        this.email = email;
     }
 
 
@@ -74,22 +62,6 @@ public class Secretary {
         this.lastName = lastName;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public User getUser() {
         return user;
     }
@@ -104,8 +76,6 @@ public class Secretary {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 '}';
     }
 }

@@ -23,6 +23,7 @@ public interface SecretaryRepository extends JpaRepository<Secretary, Long> {
     @Query("SELECT s FROM Secretary s WHERE s.user.username = :username")
     Optional<Secretary> findByUserUsername(@Param("username") String username);
 
-
+    @Query("SELECT s FROM Secretary s WHERE s.user.id = :userId")
+    Optional<Secretary> findByUserId(@Param("userId") Long userId);
 
 }

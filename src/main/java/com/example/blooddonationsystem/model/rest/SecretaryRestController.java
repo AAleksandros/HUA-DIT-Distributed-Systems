@@ -3,7 +3,7 @@ package com.example.blooddonationsystem.model.rest;
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.payload.response.CitizenDetailsResponse;
-import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
+import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponse;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.service.DonationApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class SecretaryRestController {
 
 
     @GetMapping("/review-applications")
-    public ResponseEntity<List<DonationApplicationResponseDTO>> viewAllApplications(@RequestParam(value = "status", required = false) String statusString) {
+    public ResponseEntity<List<DonationApplicationResponse>> viewAllApplications(@RequestParam(value = "status", required = false) String statusString) {
         Optional<DonationApplication.ApplicationStatus> status = Optional.empty();
         if (statusString != null) {
             try {
@@ -36,7 +36,7 @@ public class SecretaryRestController {
             }
         }
 
-        List<DonationApplicationResponseDTO> applications = donationApplicationService.findApplicationsByStatus(status);
+        List<DonationApplicationResponse> applications = donationApplicationService.findApplicationsByStatus(status);
         return ResponseEntity.ok(applications);
     }
 
@@ -66,17 +66,15 @@ public class SecretaryRestController {
             donationDetails.setStatus(donationApplication.getStatus().name());
             donationDetails.setCreatedAt(donationApplication.getCreatedAt());
             donationDetails.setProcessedAt(donationApplication.getProcessedAt());
-
             donationDetails.setProcessedBySecretary(donationApplication.getProcessedBy() != null ? donationApplication.getProcessedBy().getUser().getUsername() : null);
-
             donationDetails.setFreeOfInfections(donationApplication.isFreeOfInfections());
             donationDetails.setHasNoTattoosOrPiercings(donationApplication.hasNoTattoosOrPiercings());
             donationDetails.setHasNoRecentProcedures(donationApplication.hasNoRecentProcedures());
             donationDetails.setHasNoTravelToRiskAreas(donationApplication.hasNoTravelToRiskAreas());
             donationDetails.setHasNoRiskBehavior(donationApplication.hasNoRiskBehavior());
-            donationDetails.setNotRecentlyPregnant(donationApplication.isNotRecentlyPregnant());
-            donationDetails.setNotBreastfeeding(donationApplication.isNotBreastfeeding());
-            donationDetails.setHasNoDrugUse(donationApplication.isHasNoDrugUse());
+            donationDetails.setNotRecentlyPregnant(donationApplication.isRecentlyPregnant());
+            donationDetails.setNotBreastfeeding(donationApplication.isBreastfeeding());
+            donationDetails.setHasNoDrugUse(donationApplication.isHasDrugUse());
             donationDetails.setHasAIDS(donationApplication.hasAIDS());
             donationDetails.setRejectionReason(donationApplication.getRejectionReason());
 

@@ -3,7 +3,7 @@ package com.example.blooddonationsystem.model.service;
 
 import com.example.blooddonationsystem.model.entity.DonationApplication;
 import com.example.blooddonationsystem.model.entity.Secretary;
-import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
+import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponse;
 
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
 import com.example.blooddonationsystem.model.repository.SecretaryRepository;
@@ -65,10 +65,10 @@ public class DonationApplicationService {
     }
 
     // Get all applications by citizen id
-    public List<DonationApplicationResponseDTO> findApplicationsByCitizenId(Long citizenId) {
+    public List<DonationApplicationResponse> findApplicationsByCitizenId(Long citizenId) {
         List<DonationApplication> applications = donationApplicationRepository.findByCitizenId(citizenId);
         return applications.stream()
-                .map(application -> new DonationApplicationResponseDTO(application.getId(), application.getStatus().name(),application.getCreatedAt(),
+                .map(application -> new DonationApplicationResponse(application.getId(), application.getStatus().name(),application.getCreatedAt(),
                         application.getCitizen().getId()))
                 .collect(Collectors.toList());
     }
@@ -80,7 +80,7 @@ public class DonationApplicationService {
     }
 
     // Get all applications by status
-    public List<DonationApplicationResponseDTO> findApplicationsByStatus(Optional<DonationApplication.ApplicationStatus> status) {
+    public List<DonationApplicationResponse> findApplicationsByStatus(Optional<DonationApplication.ApplicationStatus> status) {
         List<DonationApplication> applications;
         if (status.isPresent()) {
             applications = donationApplicationRepository.findByStatus(status.get());
@@ -93,8 +93,8 @@ public class DonationApplicationService {
     }
 
     // Convert to response DTO
-    private DonationApplicationResponseDTO convertToResponseDTO(DonationApplication application) {
-        return new DonationApplicationResponseDTO(application.getId(), application.getStatus().name(),application.getCreatedAt(),
+    private DonationApplicationResponse convertToResponseDTO(DonationApplication application) {
+        return new DonationApplicationResponse(application.getId(), application.getStatus().name(),application.getCreatedAt(),
                 application.getCitizen().getId());
     }
 

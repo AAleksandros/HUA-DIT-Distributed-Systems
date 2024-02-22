@@ -1,21 +1,18 @@
 package com.example.blooddonationsystem.model.service;
 
-import com.example.blooddonationsystem.model.entity.Role;
-import com.example.blooddonationsystem.model.entity.Secretary;
-import com.example.blooddonationsystem.model.entity.User;
-import com.example.blooddonationsystem.model.repository.RoleRepository;
-import com.example.blooddonationsystem.model.repository.SecretaryRepository;
-import com.example.blooddonationsystem.model.repository.UserRepository;
+import com.example.blooddonationsystem.model.entity.*;
+import com.example.blooddonationsystem.model.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.PostConstruct;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-
-
 
 @Service
 public class InitialDataService {
@@ -32,8 +29,14 @@ public class InitialDataService {
     @Autowired
     private SecretaryRepository secretaryRepository;
 
+    @Autowired
+    private CitizenRepository citizenRepository;
+
+    @Autowired
+    private DonationApplicationRepository donationApplicationRepository;
+
     // Create roles
-    private void createRoles() {
+    public void createRoles() {
         String[] roles = {"ROLE_ADMIN", "ROLE_SECRETARY", "ROLE_CITIZEN"};
 
         for (String roleName : roles) {
@@ -46,8 +49,7 @@ public class InitialDataService {
     }
 
     // Create initial users
-    private void createInitialUsers() {
-        // Check and create an admin user if not exists
+    public void createInitialUsers() {
         Optional<User> adminUserOpt = userRepository.findByEmail("admin@example.com");
         if (adminUserOpt.isEmpty()) {
             User admin = new User("admin", "admin@example.com", passwordEncoder.encode("adminpass"));
@@ -57,28 +59,60 @@ public class InitialDataService {
             userRepository.save(admin);
         }
 
-        // Check and create a secretary user if not exists
         Optional<User> secretaryUserOpt = userRepository.findByEmail("secretary@example.com");
         if (secretaryUserOpt.isEmpty()) {
             User secretaryUser = new User("secretary", "secretary@example.com", passwordEncoder.encode("secretpass"));
             Set<Role> secretaryRoles = new HashSet<>();
             secretaryRoles.add(roleRepository.findByName("ROLE_SECRETARY").orElseThrow());
             secretaryUser.setRoles(secretaryRoles);
-            secretaryUser = userRepository.save(secretaryUser); // Save to get the generated ID
+            secretaryUser = userRepository.save(secretaryUser);
 
-            // Create and link the Secretary entity
             Secretary secretaryDetails = new Secretary();
-            secretaryDetails.setFirstName("Maria");
-            secretaryDetails.setLastName("Papadopoulou");
-            secretaryDetails.setUser(secretaryUser); // Link the User entity
+            secretaryDetails.setUser(secretaryUser);
             secretaryRepository.save(secretaryDetails);
         }
     }
 
-    @PostConstruct
-    public void initializeData() {
-        createRoles();
-        createInitialUsers();
+    public void createUserWithCitizenRoleAndDonationApplication() {
+        Optional<User> testUserOpt = userRepository.findByEmail("aleksandrosa20@gmail.com");
+        Secretary processedBySecretary = secretaryRepository.findById(1L)
+                .orElseThrow(() -> new RuntimeException("Secretary with ID 1 not found"));
 
+        if (testUserOpt.isEmpty()) {
+            User testUser = new User("scheduletest", "aleksandrosa20@gmail.com", passwordEncoder.encode("pass123"));
+            Set<Role> citizenRole = new HashSet<>();
+            citizenRole.add(roleRepository.findByName("ROLE_CITIZEN").orElseThrow());
+            testUser.setRoles(citizenRole);
+            testUser = userRepository.save(testUser);
+
+            Citizen testCitizen = new Citizen();
+            testCitizen.setUser(testUser);
+            testCitizen.setFirstName("Alex");
+            testCitizen.setLastName("Alex");
+            testCitizen.setArea("Kratiko Hospital");
+            citizenRepository.save(testCitizen);
+
+            // Create DonationApplication with specified criteria
+            DonationApplication donationApplication = new DonationApplication();
+            donationApplication.setCitizen(testCitizen);
+            donationApplication.setHasDrugUse(true);
+            donationApplication.setHasRecentProcedures(true);
+            donationApplication.setHasRiskBehavior(true);
+            donationApplication.setHasTattoosOrPiercings(true);
+            donationApplication.setHasTravelToRiskAreas(true);
+            donationApplication.setHasAIDS(true);
+            donationApplication.setFreeOfInfections(true);
+            donationApplication.setRecentlyPregnant(true);
+            donationApplication.setBreastfeeding(true);
+
+            donationApplication.setStatus(DonationApplication.ApplicationStatus.valueOf("APPROVED"));
+            LocalDate processedDate = LocalDate.parse("01.01.2023", DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+            LocalTime processedTime = LocalTime.of(0, 0, 0, 0); // Adjust the time as needed
+            LocalDateTime processedAt = LocalDateTime.of(processedDate, processedTime);
+            donationApplication.setProcessedAt(processedAt);
+            donationApplication.setProcessedBy(processedBySecretary);
+
+            donationApplicationRepository.save(donationApplication);
+        }
     }
 }

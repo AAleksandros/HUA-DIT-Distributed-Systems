@@ -80,10 +80,9 @@ public class CitizenRestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentEmail;
 
-        // Explicitly retrieve the email from UserDetailsImpl
         if (authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            currentEmail = userDetails.getEmail(); // Get the email directly from UserDetailsImpl
+            currentEmail = userDetails.getEmail();
         } else {
             throw new RuntimeException("Authentication principal does not contain the expected details.");
         }
@@ -101,9 +100,9 @@ public class CitizenRestController {
                 return ResponseEntity.badRequest().body("Email is already in use.");
             }
             user.setEmail(citizenUpdateDTO.getEmail());
-            // Extract the username from the email before updating
+
             String newUsername = citizenUpdateDTO.getEmail().substring(0, citizenUpdateDTO.getEmail().indexOf('@'));
-            user.setUsername(newUsername); // Set the extracted part as the new username
+            user.setUsername(newUsername);
         }
 
         Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(currentEmail)
@@ -135,12 +134,11 @@ public class CitizenRestController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email;
 
-        // Check if the authentication principal is an instance of UserDetailsImpl
         if (authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            email = userDetails.getEmail(); // Directly access the email from UserDetailsImpl
+            email = userDetails.getEmail();
         } else {
-            // Throw an exception or handle the case where the principal is not an instance of UserDetailsImpl
+
             throw new RuntimeException("Authentication principal does not contain the expected details.");
         }
 

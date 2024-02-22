@@ -1,6 +1,5 @@
 package com.example.blooddonationsystem.model.service;
 
-
 import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.SecretaryRepository;
@@ -17,13 +16,14 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    CitizenRepository citizenRepository;
+    private CitizenRepository citizenRepository;
 
     @Autowired
-    SecretaryRepository secretaryRepository;
+    private SecretaryRepository secretaryRepository;
+
 
     // Load the user by username
     @Override
@@ -35,18 +35,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
+    // Delete a user and all associated entities
     @Transactional
     public void deleteUserAndAssociations(Long userId) {
-        // Check for and delete associated Citizen, if any
         citizenRepository.findByUserId(userId).ifPresent(citizen -> citizenRepository.delete(citizen));
 
-        // Check for and delete associated Secretary, if any
         secretaryRepository.findByUserId(userId).ifPresent(secretary -> secretaryRepository.delete(secretary));
 
-        // Finally, delete the User
         userRepository.deleteById(userId);
     }
-
-
 
 }

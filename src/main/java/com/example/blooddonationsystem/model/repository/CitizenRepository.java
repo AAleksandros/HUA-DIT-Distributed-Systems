@@ -11,9 +11,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Hidden
-public interface CitizenRepository extends JpaRepository<Citizen, Long> { // Ensure the correct ID type is used here, Long instead of Integer if your Citizen ID is of type Long
+public interface CitizenRepository extends JpaRepository<Citizen, Long> {
 
-    // Correctly defined query to find Citizen by User's email
     @Query("SELECT c FROM Citizen c WHERE LOWER(c.user.email) = LOWER(:email)")
     Optional<Citizen> findByUserEmailIgnoreCase(@Param("email") String email);
 

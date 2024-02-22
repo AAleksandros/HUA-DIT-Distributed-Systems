@@ -1,10 +1,8 @@
 package com.example.blooddonationsystem.model.rest;
 
 import com.example.blooddonationsystem.model.entity.Citizen;
-import com.example.blooddonationsystem.model.entity.DonationApplication;
-import com.example.blooddonationsystem.model.entity.User;
-import com.example.blooddonationsystem.model.payload.request.DonationApplicationDTO;
-import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponseDTO;
+import com.example.blooddonationsystem.model.payload.request.DonationApplication;
+import com.example.blooddonationsystem.model.payload.response.DonationApplicationResponse;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.UserRepository;
 import com.example.blooddonationsystem.model.service.DonationApplicationService;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import com.example.blooddonationsystem.model.service.EmailService;
 
@@ -45,7 +42,7 @@ public class BloodDonationRestController {
 
     // Apply for a blood donation
     @PostMapping("/apply")
-    public ResponseEntity<?> applyForDonation(@Valid @RequestBody DonationApplicationDTO applicationDTO) {
+    public ResponseEntity<?> applyForDonation(@Valid @RequestBody DonationApplication applicationDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email;
 
@@ -60,17 +57,17 @@ public class BloodDonationRestController {
                 .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + email));
 
 
-        DonationApplication application = new DonationApplication();
+        com.example.blooddonationsystem.model.entity.DonationApplication application = new com.example.blooddonationsystem.model.entity.DonationApplication();
         application.setCitizen(citizen);
-        application.setHasNoTattoosOrPiercings(applicationDTO.isHasNoTattoosOrPiercings());
-        application.setHasNoRecentProcedures(applicationDTO.isHasNoRecentProcedures());
-        application.setHasNoTravelToRiskAreas(applicationDTO.isHasNoTravelToRiskAreas());
-        application.setHasNoRiskBehavior(applicationDTO.isHasNoRiskBehavior());
-        application.setHasNoDrugUse(applicationDTO.isHasNoDrugUse());
+        application.setHasTattoosOrPiercings(applicationDTO.isHasTattoosOrPiercings());
+        application.setHasRecentProcedures(applicationDTO.isHasRecentProcedures());
+        application.setHasTravelToRiskAreas(applicationDTO.isHasTravelToRiskAreas());
+        application.setHasRiskBehavior(applicationDTO.isHasRiskBehavior());
+        application.setHasDrugUse(applicationDTO.isHasDrugUse());
         application.setHasAIDS(applicationDTO.isHasAIDS());
         application.setFreeOfInfections(applicationDTO.isFreeOfInfections());
-        application.setNotRecentlyPregnant(applicationDTO.isNotRecentlyPregnant());
-        application.setNotBreastfeeding(applicationDTO.isNotBreastfeeding());
+        application.setRecentlyPregnant(applicationDTO.isRecentlyPregnant());
+        application.setBreastfeeding(applicationDTO.isBreastfeeding());
 
         donationApplicationService.createApplication(application);
 
@@ -79,13 +76,13 @@ public class BloodDonationRestController {
 
     // Get current citizen's applications
     @GetMapping("/my-applications")
-    public ResponseEntity<List<DonationApplicationResponseDTO>> getMyApplication() {
+    public ResponseEntity<List<DonationApplicationResponse>> getMyApplication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email;
 
         if (authentication.getPrincipal() instanceof UserDetailsImpl) {
             UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-            email = userDetails.getEmail(); // Access the email directly instead of using getUsername()
+            email = userDetails.getEmail();
         } else {
             throw new RuntimeException("Authentication principal does not contain the expected details.");
         }
@@ -93,7 +90,7 @@ public class BloodDonationRestController {
         Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(email)
                 .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + email));
 
-        List<DonationApplicationResponseDTO> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
+        List<DonationApplicationResponse> applications = donationApplicationService.findApplicationsByCitizenId(citizen.getId());
         return ResponseEntity.ok(applications);
     }
 
@@ -102,7 +99,7 @@ public class BloodDonationRestController {
     @Secured("ROLE_SECRETARY")
     @PostMapping("/applications/{applicationId}/status")
     public ResponseEntity<?> updateApplicationStatus(@PathVariable Long applicationId,
-                                                     @RequestParam DonationApplication.ApplicationStatus status,
+                                                     @RequestParam com.example.blooddonationsystem.model.entity.DonationApplication.ApplicationStatus status,
                                                      @RequestParam(required = false) String rejectionReason) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,7 +111,7 @@ public class BloodDonationRestController {
 
         Optional<String> optionalRejectionReason = Optional.ofNullable(rejectionReason);
 
-        DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason, secretaryEmail);
+        com.example.blooddonationsystem.model.entity.DonationApplication updatedApplication = donationApplicationService.updateApplicationStatus(applicationId, status, optionalRejectionReason, secretaryEmail);
 
         String citizenEmail = updatedApplication.getCitizen().getUser().getEmail();
         String area = updatedApplication.getCitizen().getArea();
@@ -123,11 +120,11 @@ public class BloodDonationRestController {
         String subject = "Application Status Update";
         String content;
 
-        if (status == DonationApplication.ApplicationStatus.APPROVED) {
+        if (status == com.example.blooddonationsystem.model.entity.DonationApplication.ApplicationStatus.APPROVED) {
             content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
                     "Your application has been approved. Please visit our blood donation center located at " + area + " for further instructions.\n\n" +
                     "Best regards,\nHUA Blood Donation Team";
-        } else if (status == DonationApplication.ApplicationStatus.REJECTED) {
+        } else if (status == com.example.blooddonationsystem.model.entity.DonationApplication.ApplicationStatus.REJECTED) {
             content = "Dear " + updatedApplication.getCitizen().getFirstName() + ",\n\n" +
                     "Unfortunately, your application has been rejected.\n" +
                     "Reason: " + optionalRejectionReason.orElse("Not specified") + "\n\n" +

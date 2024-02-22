@@ -3,7 +3,7 @@ package com.example.blooddonationsystem.model.payload.response;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class DonationApplicationResponseDTO {
+public class DonationApplicationResponse {
     private Long id;
     private String status;
     private String createdAt;
@@ -12,7 +12,7 @@ public class DonationApplicationResponseDTO {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-    public DonationApplicationResponseDTO(Long id, String status, LocalDateTime createdAt, Long citizenId) {
+    public DonationApplicationResponse(Long id, String status, LocalDateTime createdAt, Long citizenId) {
         this.id = id;
         this.status = status;
         this.createdAt = createdAt != null ? createdAt.format(formatter) : null; // Format the date

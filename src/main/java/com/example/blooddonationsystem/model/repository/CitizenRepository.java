@@ -11,16 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Hidden
-public interface CitizenRepository extends JpaRepository<Citizen, Long> { // Ensure the correct ID type is used here, Long instead of Integer if your Citizen ID is of type Long
+public interface CitizenRepository extends JpaRepository<Citizen, Long> {
+
     @Query("SELECT c FROM Citizen c WHERE LOWER(c.user.email) = LOWER(:email)")
     Optional<Citizen> findByUserEmailIgnoreCase(@Param("email") String email);
-
-    @Query("SELECT c FROM Citizen c WHERE LOWER(c.user.username) = LOWER(:username)")
-    Optional<Citizen> findByUsernameIgnoreCase(@Param("username") String username);
 
     @Query("SELECT c FROM Citizen c LEFT JOIN FETCH c.donationApplication da WHERE c.id = :citizenId")
     Optional<Citizen> findByIdWithDonationApplication(@Param("citizenId") Long citizenId);
 
-
+    @Query("SELECT c FROM Citizen c LEFT JOIN FETCH c.user u WHERE u.id = :userId")
+    Optional<Citizen> findByUserId(Long userId);
 
 }

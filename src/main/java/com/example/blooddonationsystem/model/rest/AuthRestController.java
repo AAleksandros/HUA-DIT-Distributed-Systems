@@ -1,4 +1,4 @@
-package com.example.blooddonationsystem.model.controller;
+package com.example.blooddonationsystem.model.rest;
 
 import com.example.blooddonationsystem.model.config.JwtUtils;
 import com.example.blooddonationsystem.model.dao.CitizenDAOImpl;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthRestController {
 
     @Autowired
     private AuthenticationManager authenticationManager;

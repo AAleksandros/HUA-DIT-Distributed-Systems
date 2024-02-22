@@ -36,24 +36,24 @@ public class DonationApplication {
     private boolean isFreeOfInfections;
 
     @NotNull(message = "This field is required")
-    private boolean hasNoTattoosOrPiercings;
+    private boolean hasTattoosOrPiercings;
 
     @NotNull(message = "This field is required")
-    private boolean hasNoRecentProcedures;
+    private boolean hasRecentProcedures;
 
     @NotNull(message = "This field is required")
-    private boolean hasNoTravelToRiskAreas;
+    private boolean hasTravelToRiskAreas;
 
     @NotNull(message = "This field is required")
-    private boolean hasNoRiskBehavior;
+    private boolean hasRiskBehavior;
 
     @NotNull(message = "This field is required")
-    private boolean isNotRecentlyPregnant;
+    private boolean isRecentlyPregnant;
 
     @NotNull(message = "This field is required")
-    private boolean isNotBreastfeeding;
+    private boolean isBreastfeeding;
     @NotNull(message = "This field is required")
-    private boolean hasNoDrugUse;
+    private boolean hasDrugUse;
 
     @NotNull(message = "This field is required")
     private boolean hasAIDS;
@@ -104,11 +104,11 @@ public class DonationApplication {
         return createdAt;
     }
 
-    public void setHasNoDrugUse(boolean hasNoDrugUse) {
-        this.hasNoDrugUse = hasNoDrugUse;
+    public void setHasDrugUse(boolean hasNoDrugUse) {
+        this.hasDrugUse = hasNoDrugUse;
     }
-    public boolean isHasNoDrugUse(){
-        return hasNoDrugUse;
+    public boolean isHasDrugUse(){
+        return hasDrugUse;
     }
     public Secretary getProcessedBy() {
         return processedBy;
@@ -135,52 +135,52 @@ public class DonationApplication {
     }
 
     public boolean hasNoTattoosOrPiercings() {
-        return hasNoTattoosOrPiercings;
+        return hasTattoosOrPiercings;
     }
 
-    public void setHasNoTattoosOrPiercings(boolean hasNoTattoosOrPiercings) {
-        this.hasNoTattoosOrPiercings = hasNoTattoosOrPiercings;
+    public void setHasTattoosOrPiercings(boolean hasNoTattoosOrPiercings) {
+        this.hasTattoosOrPiercings = hasNoTattoosOrPiercings;
     }
 
     public boolean hasNoRecentProcedures() {
-        return hasNoRecentProcedures;
+        return hasRecentProcedures;
     }
 
-    public void setHasNoRecentProcedures(boolean hasNoRecentProcedures) {
-        this.hasNoRecentProcedures = hasNoRecentProcedures;
+    public void setHasRecentProcedures(boolean hasNoRecentProcedures) {
+        this.hasRecentProcedures = hasNoRecentProcedures;
     }
 
     public boolean hasNoTravelToRiskAreas() {
-        return hasNoTravelToRiskAreas;
+        return hasTravelToRiskAreas;
     }
 
-    public void setHasNoTravelToRiskAreas(boolean hasNoTravelToRiskAreas) {
-        this.hasNoTravelToRiskAreas = hasNoTravelToRiskAreas;
+    public void setHasTravelToRiskAreas(boolean hasNoTravelToRiskAreas) {
+        this.hasTravelToRiskAreas = hasNoTravelToRiskAreas;
     }
 
     public boolean hasNoRiskBehavior() {
-        return hasNoRiskBehavior;
+        return hasRiskBehavior;
     }
 
-    public void setHasNoRiskBehavior(boolean hasNoRiskBehavior) {
-        this.hasNoRiskBehavior = hasNoRiskBehavior;
+    public void setHasRiskBehavior(boolean hasNoRiskBehavior) {
+        this.hasRiskBehavior = hasNoRiskBehavior;
     }
 
 
-    public boolean isNotRecentlyPregnant() {
-        return isNotRecentlyPregnant;
+    public boolean isRecentlyPregnant() {
+        return isRecentlyPregnant;
     }
 
-    public void setNotRecentlyPregnant(boolean notRecentlyPregnant) {
-        isNotRecentlyPregnant = notRecentlyPregnant;
+    public void setRecentlyPregnant(boolean recentlyPregnant) {
+        isRecentlyPregnant = recentlyPregnant;
     }
 
-    public boolean isNotBreastfeeding() {
-        return isNotBreastfeeding;
+    public boolean isBreastfeeding() {
+        return isBreastfeeding;
     }
 
-    public void setNotBreastfeeding(boolean notBreastfeeding) {
-        isNotBreastfeeding = notBreastfeeding;
+    public void setBreastfeeding(boolean breastfeeding) {
+        isBreastfeeding = breastfeeding;
     }
 
     public boolean hasAIDS() {

@@ -1,11 +1,9 @@
 package com.example.blooddonationsystem.model.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "citizen")
@@ -23,15 +21,6 @@ public class Citizen {
     @Size(max = 50)
     @Column(name = "last_name")
     private String lastName;
-
-    @NotBlank
-    @Size(max = 120)
-    private String password;
-
-    @NotBlank
-    @Size(max = 50)
-    @Email
-    private String email;
 
     @Column(name = "phone_number")
     private String phoneNumber;
@@ -62,8 +51,6 @@ public class Citizen {
     public Citizen(String firstName, String lastName, String password, String email, String phoneNumber, String area, String bloodType, Integer age) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
-        this.email = email;
         this.phoneNumber = phoneNumber;
         this.area = area;
         this.bloodType = bloodType;
@@ -98,22 +85,6 @@ public class Citizen {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getPhoneNumber() {
@@ -173,8 +144,6 @@ public class Citizen {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", area='" + area + '\'' +
                 ", bloodType='" + bloodType + '\'' +

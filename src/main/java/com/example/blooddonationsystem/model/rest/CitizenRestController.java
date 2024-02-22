@@ -43,11 +43,14 @@ package com.example.blooddonationsystem.model.rest;
 import com.example.blooddonationsystem.model.dao.CitizenDAO;
 import com.example.blooddonationsystem.model.entity.Citizen;
 import com.example.blooddonationsystem.model.entity.DonationApplication;
+import com.example.blooddonationsystem.model.entity.User;
 import com.example.blooddonationsystem.model.payload.request.CitizenUpdate;
 import com.example.blooddonationsystem.model.payload.response.CitizenDetailsResponse;
 import com.example.blooddonationsystem.model.payload.response.CitizenMyDetails;
 import com.example.blooddonationsystem.model.repository.CitizenRepository;
 import com.example.blooddonationsystem.model.repository.DonationApplicationRepository;
+import com.example.blooddonationsystem.model.repository.UserRepository;
+import com.example.blooddonationsystem.model.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +67,9 @@ import java.util.Optional;
 public class CitizenRestController {
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private CitizenRepository citizenRepository;
 
     @Autowired
@@ -72,51 +78,85 @@ public class CitizenRestController {
     @PutMapping("/update")
     public ResponseEntity<?> updateCitizenInfo(@RequestBody CitizenUpdate citizenUpdateDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        String currentEmail;
 
-        Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            currentEmail = userDetails.getEmail();
+        } else {
+            throw new RuntimeException("Authentication principal does not contain the expected details.");
+        }
 
+        User user = userRepository.findByEmail(currentEmail)
+                .orElseThrow(() -> new RuntimeException("User not found for email: " + currentEmail));
+
+        // Update fields in the User entity as necessary
+        if (citizenUpdateDTO.getPassword() != null && !citizenUpdateDTO.getPassword().trim().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(citizenUpdateDTO.getPassword()));
+        }
+
+        if (citizenUpdateDTO.getEmail() != null && !citizenUpdateDTO.getEmail().trim().isEmpty() && !citizenUpdateDTO.getEmail().equals(currentEmail)) {
+            if (userRepository.existsByEmail(citizenUpdateDTO.getEmail())) {
+                return ResponseEntity.badRequest().body("Email is already in use.");
+            }
+            user.setEmail(citizenUpdateDTO.getEmail());
+
+            String newUsername = citizenUpdateDTO.getEmail().substring(0, citizenUpdateDTO.getEmail().indexOf('@'));
+            user.setUsername(newUsername);
+        }
+
+        Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(currentEmail)
+                .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + currentEmail));
+
+
+        // Update Citizen information
         Optional.ofNullable(citizenUpdateDTO.getFirstName()).ifPresent(citizen::setFirstName);
         Optional.ofNullable(citizenUpdateDTO.getLastName()).ifPresent(citizen::setLastName);
-        if (citizenUpdateDTO.getPassword() != null && !citizenUpdateDTO.getPassword().trim().isEmpty()) {
-            citizen.setPassword(passwordEncoder.encode(citizenUpdateDTO.getPassword()));
-        }
-        Optional.ofNullable(citizenUpdateDTO.getEmail()).ifPresent(citizen::setEmail);
         Optional.ofNullable(citizenUpdateDTO.getPhoneNumber()).ifPresent(citizen::setPhoneNumber);
         Optional.ofNullable(citizenUpdateDTO.getArea()).ifPresent(citizen::setArea);
         Optional.ofNullable(citizenUpdateDTO.getBloodType()).ifPresent(citizen::setBloodType);
         Optional.ofNullable(citizenUpdateDTO.getAge()).ifPresent(citizen::setAge);
 
         try {
-            citizenRepository.save(citizen);
+            userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             return ResponseEntity.badRequest().body("Update failed due to invalid data.");
         }
         return ResponseEntity.ok().build();
     }
 
+
+
+
     // Citizens view details of their own profile
     @GetMapping("/get-myDetails")
     public ResponseEntity<CitizenMyDetails> getMyDetails() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+        String email;
 
-        Citizen citizen = citizenRepository.findByUsernameIgnoreCase(username)
-                .orElseThrow(() -> new RuntimeException("Citizen not found for username: " + username));
+        if (authentication.getPrincipal() instanceof UserDetailsImpl) {
+            UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+            email = userDetails.getEmail();
+        } else {
+
+            throw new RuntimeException("Authentication principal does not contain the expected details.");
+        }
+
+        Citizen citizen = citizenRepository.findByUserEmailIgnoreCase(email)
+                .orElseThrow(() -> new RuntimeException("Citizen not found for email: " + email));
 
         CitizenMyDetails response = convertToCitizenMyDetails(citizen);
 
         return ResponseEntity.ok(response);
     }
 
-    private CitizenMyDetails convertToCitizenMyDetails(Citizen citizen) {
 
+    private CitizenMyDetails convertToCitizenMyDetails(Citizen citizen) {
         CitizenMyDetails response = new CitizenMyDetails();
         response.setId(citizen.getId());
         response.setFirstName(citizen.getFirstName());
         response.setLastName(citizen.getLastName());
-        response.setEmail(citizen.getEmail());
+        response.setEmail(citizen.getUser().getEmail());
         response.setAge(citizen.getAge());
         response.setArea(citizen.getArea());
         response.setBloodType(citizen.getBloodType());
@@ -124,4 +164,5 @@ public class CitizenRestController {
 
         return response;
     }
+
 }

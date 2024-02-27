@@ -3,6 +3,10 @@ This project is part of the winter semester for the course of Distributed System
 
 The project is composed of two parts: the backend application and the frontend application.
 
+The backend application is covered in this repository.
+
+The frontend application can be viewed here: https://github.com/KonDiamanti/DS-Blood-Donation-System-Frontend
+
 ## Installation instructions:
 
 ### 1. Running the backend.
